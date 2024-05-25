@@ -1,0 +1,8 @@
+Flask
+Flask-SQLAlchemy
+Flask-Marshmallow
+Flask-Mail
+Flask-WTF
+pandas
+ydata-profiling
+PyMySQL

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+{% extends "layouth.html" %}
+{%block content%}
+
+<html>
+
+<head>
+    <title>Busqueda</title>
+</head>
+
+<body>
+
+
+    <div class="container">
+        <h1 class="mt-5">Búsqueda de Recibo</h1>
+    
+        <form id="search-form" method="post" action="/search" class="mt-3">
+            <div class="row mb-3">
+                <div class="col">
+                    <label for="recibo" class="form-label">Indique el Número de Recibo:</label>
+                    <input type="text" name="recibo" id="recibo" class="form-control">
+                </div>
+                <div class="col-auto align-self-end">
+                    <button type="submit" class="btn btn-success">Buscar</button>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                </div>
+            </div>
+        </form>
+    
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>FECHA</th>
+                        <th>FACTURA DE VENTA</th>
+                        <th>NOMBRE</th>
+                        <th>CC</th>
+                        <th>DIRECCIÓN</th>
+                        <th>TELÉFONO</th>
+                        <th>CORREO</th>
+                        <th>CANTIDAD</th>
+                        <th>DETALLE</th>
+                        <th>VALOR UNIDAD</th>
+                        <th>VALOR TOTAL</th>
+                        <th>TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if inventory_data %}
+                        {% for recibo in inventory_data %}
+                            <tr>
+                                <td>{{ recibo.fecha_compra }}</td>
+                                <td>{{ recibo.numero_recibo }}</td>
+                                <td>{{ recibo.nombre_paciente }}</td>
+                                <td>{{ recibo.documento }}</td>
+                                <td>{{ recibo.direccion }}</td>
+                                <td>{{ recibo.telefono }}</td>
+                                <td>{{ recibo.correo }}</td>
+                                <td>{{ recibo.cantidad }}</td>
+                                <td>{{ recibo.detalle }}</td>
+                                <td>{{ recibo.valor_unitario }}</td>
+                                <td>{{ recibo.valor_total }}</td>
+                                <td>{{ recibo.total }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="12">No se encontraron resultados para el recibo especificado.</td>                       
+                        </tr>
+                    {% endif %}
+                    <a href="/menu" class="btn btn-secondary">Atrás</a>
+                </tbody>
+            </table>
+        </div>
+    </div>
+        </table>
+    </form>
+
+</body>
+
+</html>
+
+{%endblock%}
