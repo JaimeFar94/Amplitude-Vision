@@ -8,3 +8,4 @@ ydata-profiling
 PyMySQL
 gunicorn
 psycopg2
+marshmallow-sqlalchemy
