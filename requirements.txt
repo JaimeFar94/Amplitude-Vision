@@ -6,3 +6,5 @@ Flask-WTF
 pandas
 ydata-profiling
 PyMySQL
+gunicorn
+psycopg2

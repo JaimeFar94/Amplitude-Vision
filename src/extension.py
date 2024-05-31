@@ -9,8 +9,8 @@ from flask_wtf.csrf import CSRFProtect
 app = Flask(__name__ , template_folder='templates')
 app.secret_key = '876-105-169'
 
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/medico'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/medico'
+app.config['SQLALCHEMY_DATABASE_URI'] = '//u3dchap7tdasok:p71f99aced8d869c27dc376cea7ce457648713c7f898a4c518c9263c625f6ccdb@c9uss87s9bdb8n.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d9ccqs8833erdf'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
