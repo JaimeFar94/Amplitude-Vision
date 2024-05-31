@@ -5,6 +5,7 @@ import os
 from flask_mail import Mail
 from flask_mail import Message
 from flask_wtf.csrf import CSRFProtect  
+from flask_migrate import Migrate
 
 app = Flask(__name__ , template_folder='templates')
 app.secret_key = '876-105-169'
