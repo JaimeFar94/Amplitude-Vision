@@ -1,5 +1,5 @@
 from flask import render_template, request, session, Response ,flash
-from extension import app, db, ma , os , mail , Message  , csrf
+from extension import app, db, ma , os , mail , Message  , csrf , Migrate
 from functools import wraps
 import hashlib
 from datetime import datetime

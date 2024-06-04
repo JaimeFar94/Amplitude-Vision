@@ -19,6 +19,8 @@ db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
 
+migrate = Migrate(ma, db)
+
 #Para envio de Correos 
 
 app.config['MAIL_SERVER']='smtp.gmail.com'
