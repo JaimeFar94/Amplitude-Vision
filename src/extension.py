@@ -11,7 +11,7 @@ app = Flask(__name__ , template_folder='templates')
 app.secret_key = '876-105-169'
 
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/medico'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://b3d0f58a781b47:2b5426c7@us-cluster-east-01.k8s.cleardb.net/heroku_aa815f746f4a6ca?reconnect=true'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://b8930d4e12b1e6:e55c1cfd@us-cluster-east-01.k8s.cleardb.net/heroku_e842630e704b3bc?reconnect=true'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 

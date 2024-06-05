@@ -8,7 +8,6 @@ import pandas as pd
 
 
 
-
 # Login
 class signup(db.Model):
     id = db.Column(db.Integer, primary_key=True)
