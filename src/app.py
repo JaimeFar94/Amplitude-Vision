@@ -8,7 +8,6 @@ from flask_wtf.csrf import CSRFProtect
 from functools import wraps
 import hashlib
 from datetime import datetime
-from inventory import Inventory, recibo
 import pandas as pd
 from flask import render_template, request, session, Response ,flash
 import pandas as pd
