@@ -8,12 +8,6 @@ import pandas as pd
 
 
 
-@app.cli.command('initdb')
-def initdb_command():
-    """Inicializa la base de datos."""
-    db.create_all()
-    print('Base de datos inicializada.')
-
 
 # Login
 class signup(db.Model):
