@@ -36,8 +36,3 @@ mail = Mail(app)
 csrf = CSRFProtect(app)
 
 
-if __name__ == '__main__':  # Se tiene un condicional para verificar que si se esta en el archivo de ejecución y no un modulo
-    with app.app_context():
-        db.create_all()
-        mail.init_app(app)
-    app.run(debug=True)
