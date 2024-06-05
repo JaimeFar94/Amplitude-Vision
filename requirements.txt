@@ -9,4 +9,4 @@ PyMySQL
 gunicorn
 psycopg2
 marshmallow-sqlalchemy
-mysqlclient
+Flask-Migrate

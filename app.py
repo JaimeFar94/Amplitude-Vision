@@ -14,6 +14,9 @@ import pandas as pd
 from pandas_profiling import ProfileReport
 from flask import render_template, request, send_file
 import ydata_profiling
+from flask import send_file
+import io
+
 
 
 
