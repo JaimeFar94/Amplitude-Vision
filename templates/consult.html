@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+{% extends "layouth.html" %}
+{% block content %}
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONSULT</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Pacientes Registrados</h1>
+        <div class="table-responsive">
+            <form id="search-form" method="post" action="/consult" class="mt-3">
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="consult" class="form-label">Indique el Número de Documento:</label>
+                        <input type="text" name="consult" id="consult" class="form-control">
+                    </div>
+                    <div class="col-auto align-self-end">
+                        <button type="submit" class="btn btn-success">Buscar</button>
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    </div>
+                </div>
+            </form>
+
+            {% if pacientes %}
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th colspan="12" class="text-center">Datos del paciente</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in pacientes %}
+                    <tr>
+                        <th>Tipo de Documento</th>
+                        <td>{{ p.tipo }}</td>
+                        <th>Documento</th>
+                        <td>{{ p.documento }}</td>
+                    </tr>
+                    <tr>
+                        <th>Nombre</th>
+                        <td>{{ p.nombre_paciente }}</td>
+                        <th>Edad</th>
+                        <td>{{ p.edad }}</td>
+                        <th>Género</th>
+                        <td>{{ p.genero }}</td>
+                    </tr>
+                    <tr>
+                        <th>Correo Electrónico</th>
+                        <td>{{ p.correo_electronico }}</td>
+                        <th>Dirección</th>
+                        <td>{{ p.direccion }}</td>
+                        <th>Teléfono</th>
+                        <td>{{ p.telefono }}</td>
+                    </tr>
+                    <tr>
+                        <th>EPS</th>
+                        <td>{{ p.eps }}</td>
+                        <th>Ocupación</th>
+                        <td>{{ p.cargo }}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="12" class="text-center">Datos del Acompañante</th>
+                    </tr>
+                    <tr>
+                        <th>Nombre del Acompañante</th>
+                        <td>{{ p.acompanante }}</td>
+                        <th>Parentesco</th>
+                        <td>{{ p.parentesco }}</td>
+                        <th>Teléfono del Acompañante</th>
+                        <td>{{ p.telefono_acompanante }}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="12" class="text-center">Antecedentes Familiares</th>
+                    </tr>
+                    <tr>
+                        <th>Diabetes</th>
+                        <td>{{ antecedentes[p.documento].diabetes }}</td>
+                        <th>Hipertensión</th>
+                        <td>{{ antecedentes[p.documento].hipertension }}</td>
+                    </tr>
+                    <tr>
+                        <th>Artritis</th>
+                        <td>{{ antecedentes[p.documento].artritis }}</td>
+                        <th>Alergia</th>
+                        <td>{{ antecedentes[p.documento].alergia }}</td>
+                    </tr>
+                    <tr>
+                        <th>Catarata</th>
+                        <td>{{ antecedentes[p.documento].catarata }}</td>
+                        <th>Glaucoma</th>
+                        <td>{{ antecedentes[p.documento].glaucoma }}</td>
+                    </tr>
+                    <tr>
+                        <th>Estrabismo</th>
+                        <td>{{ antecedentes[p.documento].estrabismo }}</td>
+                        <th>Queratocono</th>
+                        <td>{{ antecedentes[p.documento].queratocono }}</td>
+                        <th>Otros</th>
+                        <td>{{ antecedentes[p.documento].otros }}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="12" class="text-center">Antecedentes Personales</th>
+                    </tr>
+                    <tr>
+                        <th>Diabetes</th>
+                        <td>{{ antecedentes[p.documento].diabetes_per }}</td>
+                        <th>Hipertensión</th>
+                        <td>{{ antecedentes[p.documento].hipertension_per }}</td>
+                    </tr>
+                    <tr>
+                        <th>Artritis</th>
+                        <td>{{ antecedentes[p.documento].artritis_per }}</td>
+                        <th>Alergia</th>
+                        <td>{{ antecedentes[p.documento].alergia_per }}</td>
+                    </tr>
+                    <tr>
+                        <th>Úlcera Gástrica</th>
+                        <td>{{ antecedentes[p.documento].ulcera_per }}</td>
+                        <th>Cirugía Refractiva</th>
+                        <td>{{ antecedentes[p.documento].cirugia_per }}</td>
+                    </tr>
+                    <tr>
+                        <th>Lentes de Contacto</th>
+                        <td>{{ antecedentes[p.documento].lentes_contacto_per }}</td>
+                        <th>Otros</th>
+                        <td>{{ antecedentes[p.documento].otros1 }}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="12" class="text-center">Antecedentes Quirúrgicos</th>
+                    </tr>
+                    <tr>
+                        <th>Descripción</th>
+                        <td colspan="11">{{ antecedentes[p.documento].descripcion }}</td>
+                    </tr>
+                    <tr>
+                        <th>Motivo de la Consulta</th>
+                        <td>{{ mov_consulta[p.documento].mov_consulta }}</td>
+                        <th>Última Consulta</th>
+                        <td>{{ mov_consulta[p.documento].ulti_consulta }}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="12" class="text-center">RX FINAL (Formulación)</th>
+                    </tr>
+                    <tr>
+                        <th>Ojo Derecho</th>
+                        <th>Esfera</th>
+                        <td>{{ mov_consulta[p.documento].esfera }}</td>
+                        <th>Cilindro</th>
+                        <td>{{ mov_consulta[p.documento].cilindro }}</td>
+                        <th>Eje</th>
+                        <td>{{ mov_consulta[p.documento].eje }}</td>
+                        <th>DP</th>
+                        <td>{{ mov_consulta[p.documento].dp }}</td>
+                        <th>VL20</th>
+                        <td>{{ mov_consulta[p.documento].vl20 }}</td>
+                        <th>VP20</th>
+                        <td>{{ mov_consulta[p.documento].vp20 }}</td>
+                        <th>ADD</th>
+                        <td>{{ mov_consulta[p.documento].add_0 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Ojo Izquierdo</th>
+                        <th>Esfera</th>
+                        <td>{{ mov_consulta[p.documento].esfera_1 }}</td>
+                        <th>Cilindro</th>
+                        <td>{{ mov_consulta[p.documento].cilindro_1 }}</td>
+                        <th>Eje</th>
+                        <td>{{ mov_consulta[p.documento].eje_1 }}</td>
+                        <th>DP</th>
+                        <td>{{ mov_consulta[p.documento].dp_1 }}</td>
+                        <th>VL20</th>
+                        <td>{{ mov_consulta[p.documento].vl20_1 }}</td>
+                        <th>VP20</th>
+                        <td>{{ mov_consulta[p.documento].vp20_1 }}</td>
+                        <th>ADD</th>
+                        <td>{{ mov_consulta[p.documento].add_1 }}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="12" class="text-center">Visión</th>
+                    </tr>
+                    <tr>
+                        <th>VISIÓN LEJANA</th>
+                        <td>{{ vista[p.documento].vision_lejana }}</td>
+                        <th>VISIÓN PRÓXIMA</th>
+                        <td>{{ vista[p.documento].vision_proxima }}</td>
+                        <th>DUCCIONES OD</th>
+                        <td>{{ vista[p.documento].ducciones_od }}</td>
+                        <th>DUCCIONES OI</th>
+                        <td>{{ vista[p.documento].ducciones_oi }}</td>
+                        <th>PPC OD</th>
+                        <td>{{ vista[p.documento].ppc_od }}</td>
+                        <th>PPC OI</th>
+                        <td>{{ vista[p.documento].ppc_oi }}</td>
+                    </tr>
+                    <tr>
+                        <th>OFTALMOSCOPIA</th>
+                        <th>OJO DERECHO</th>
+                        <td>{{ vista[p.documento].ojo_derecho }}</td>
+                        <th>OJO IZQUIERDO</th>
+                        <td>{{ vista[p.documento].ojo_izquierdo }}</td>
+                    </tr>
+                    <tr>
+                        <th>QUERATOMETRÍA</th>
+                        <th>OJO DERECHO</th>
+                        <td>{{ vista[p.documento].ojo_drc_querato }}</td>
+                        <th>OJO IZQUIERDO</th>
+                        <td>{{ vista[p.documento].ojo_izq_querato }}</td>
+                    </tr>
+                    <tr>
+                        <th>REFRACTOMETRÍA</th>
+                        <th>OJO DERECHO</th>
+                        <td>{{ vista[p.documento].ojo_drc_refac }}</td>
+                        <th>OJO IZQUIERDO</th>
+                        <td>{{ vista[p.documento].ojo_izq_refac }}</td>
+                    </tr>
+                    <tr>
+                        <th>RETINOSCOPIA</th>
+                    </tr>
+                    <tr>
+                        <th>OJO DERECHO</th>
+                        <th>Esfera</th>
+                        <td>{{ vista[p.documento].esfera_retino }}</td>
+                        <th>Cilindro</th>
+                        <td>{{ vista[p.documento].cilindro_retino }}</td>
+                        <th>Eje</th>
+                        <td>{{ vista[p.documento].eje_retino }}</td>
+                        <th>DP</th>
+                        <td>{{ vista[p.documento].dp_retino }}</td>
+                        <th>VL20</th>
+                        <td>{{ vista[p.documento].vl20_retino }}</td>
+                        <th>VP20</th>
+                        <td>{{ vista[p.documento].vp20_retino }}</td>
+                        <th>ADD</th>
+                        <td>{{ vista[p.documento].add_retino }}</td>
+                    </tr>
+                    <tr>
+                        <th>OJO IZQUIERDO</th>
+                        <th>Esfera</th>
+                        <td>{{ vista[p.documento].esfera_retino_1 }}</td>
+                        <th>Cilindro</th>
+                        <td>{{ vista[p.documento].cilindro_retino_1 }}</td>
+                        <th>Eje</th>
+                        <td>{{ vista[p.documento].eje_retino_1 }}</td>
+                        <th>DP</th>
+                        <td>{{ vista[p.documento].dp_retino_1 }}</td>
+                        <th>VL20</th>
+                        <td>{{ vista[p.documento].vl20_retino_1 }}</td>
+                        <th>VP20</th>
+                        <td>{{ vista[p.documento].vp20_retino_1 }}</td>
+                        <th>ADD</th>
+                        <td>{{ vista[p.documento].add_retino_1 }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="12" class="text-center">
+                            <a href="/edit/{{ p.documento }}/update" class="btn btn-primary mr-2">Editar</a>
+                            <a href="/delete/{{ p.documento }}" class="btn btn-danger">Eliminar Paciente</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="text-center mt-3">
+                <button id="print-button" class="btn btn-info">Imprimir Información del Paciente</button>
+            </div>
+            {% else %}
+            <div class="alert alert-warning" role="alert">
+                No se encontraron datos del paciente.
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="row justify-content-center">
+            <a href="/menu" class="btn btn-secondary">Atrás</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('print-button').addEventListener('click', function() {
+            window.print();
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
+{% endblock %}
