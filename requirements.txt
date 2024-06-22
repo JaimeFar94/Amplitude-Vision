@@ -11,3 +11,4 @@ psycopg2
 marshmallow-sqlalchemy
 Flask-Migrate
 pymysql
+mysqlclient
