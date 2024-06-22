@@ -1,89 +1,116 @@
 <!DOCTYPE html>
 {% extends "layouth.html" %}
-{%block content%}
-<html>
+{% block content %}
+<html lang="es">
 
 <head>
     <title>Inventario</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 
 <body>
-    <h1>Inventario</h1>
-    <form  method="post" action="/inventory" enctype="multipart/form-data">
-        <table class="controles">
-            <tr>
-                <th colspan="4" class="celdaControles celdaTitulo">Sistema de gestión de inventarios</th>
-            </tr>
-
-            <tr>
-                <th><label for="fecha">Fecha de Ingreso</label></th>
-                <td><input type="date" name="day" id="day"></td>
-            </tr>
-
-            <tr>
-                <th><label for="sede">Indique la sede:</label></th>
-                <td>
-                    <select name="sede" id="sede">
-                        <option value="sede1">Sede 1</option>
-                        <option value="sede2">Sede 2</option>
-                        <option value="sede3">Sede 3</option>
-                    </select>
-                </td>
-            </tr>
-
-            <tr>
-                <th><label for="montura">Montura:</label></th>
-                <td><input type="text" name="montura" id="montura" class="form-control"></td>
-                <th><label for="cantidad_montura">Cantidad </label></th>
-                <td><input type="text" name="cantidad_montura" id="cantidad_montura" class="form-control"></td>
-            </tr>
-            <tr>
-                <th><label for="marca">Marca:</label></th>
-                <td><input type="text" name="marca" id="marca" class="form-control"></td>
-            </tr>
-            <tr>
-                <th><label for="referencia">Referencia:</label></th>
-                <td><input type="text" name="referencia" id="referencia" class="form-control"></td>
-            </tr>
-            <tr>
-                <th><label for="color">Color:</label></th>
-                <td><input type="text" name="color" id="color" class="form-control"></td>
-            </tr>
-            <tr>
-                <th><label for="cordones">Cordones:</label></th>
-                <td><input type="text" name="cordones" id="cordones" class="form-control"></td>
-                <th><label for="cantidad_cordones">Cantidad </label></th>
-                <td><input type="text" name="cantidad_cordones" id="cantidad_cordones" class="form-control"></td>
-            </tr>
-            <tr>
-                <th><label for="estuches">Estuches:</label></th>
-                <td><input type="text" name="estuches" id="estuches" class="form-control"></td>
-                <th><label for="cantidad_estuches">Cantidad </label></th>
-                <td><input type="text" name="cantidad_estuches" id="cantidad_estuches" class="form-control"></td>
-            </tr>
-            <tr>
-                <th><label for="stopper">Stopper:</label></th>
-                <td><input type="text" name="stopper" id="stopper" class="form-control"></td>
-                <th><label for="cantidad_stopper">Cantidad </label></th>
-                <td><input type="text" name="cantidad_stopper" id="cantidad_stopper" class="form-control"></td>
-            </tr>
-            <tr>
-
-                <td><a href="/export" class="btn btn-info">Exportar inventario</a> </td>
-            </tr>
-            <tr>
-                <td colspan="2"><button type="submit" class="btn btn-success">Enviar</button></td>
-
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            </tr>
-
-    </form>
-    <td><a href="/menu" class="btn btn-secondary">Atrás</a> </td>
-    </table>
-
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Inventario</h1>
+        <form method="post" action="/inventory" enctype="multipart/form-data">
+            <div class="card">
+                <div class="card-header bg-primary text-white text-center">
+                    Sistema de gestión de inventarios
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="day" class="form-label">Fecha de Ingreso</label>
+                            <input type="date" class="form-control" name="day" id="day">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="sede" class="form-label">Indique la sede:</label>
+                            <select class="form-select" name="sede" id="sede">
+                                <option value="sede1">Sede 1</option>
+                                <option value="sede2">Sede 2</option>
+                                <option value="sede3">Sede 3</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="montura" class="form-label">Montura:</label>
+                            <input type="text" class="form-control" name="montura" id="montura">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="cantidad_montura" class="form-label">Cantidad:</label>
+                            <input type="text" class="form-control" name="cantidad_montura" id="cantidad_montura">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="marca" class="form-label">Marca:</label>
+                            <input type="text" class="form-control" name="marca" id="marca">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="referencia" class="form-label">Referencia:</label>
+                            <input type="text" class="form-control" name="referencia" id="referencia">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="color" class="form-label">Color:</label>
+                            <input type="text" class="form-control" name="color" id="color">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="cordones" class="form-label">Cordones:</label>
+                            <input type="text" class="form-control" name="cordones" id="cordones">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="cantidad_cordones" class="form-label">Cantidad:</label>
+                            <input type="text" class="form-control" name="cantidad_cordones" id="cantidad_cordones">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="estuches" class="form-label">Estuches:</label>
+                            <input type="text" class="form-control" name="estuches" id="estuches">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="cantidad_estuches" class="form-label">Cantidad:</label>
+                            <input type="text" class="form-control" name="cantidad_estuches" id="cantidad_estuches">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="stopper" class="form-label">Stopper:</label>
+                            <input type="text" class="form-control" name="stopper" id="stopper">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="cantidad_stopper" class="form-label">Cantidad:</label>
+                            <input type="text" class="form-control" name="cantidad_stopper" id="cantidad_stopper">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a href="/export" class="btn btn-info">Exportar inventario</a>
+                        {% if csv_path or report_path %}
+                            {% if csv_path %}
+                                <a href="{{ url_for('download_file', filename=csv_path) }}" class="btn btn-danger">Descargar CSV</a>
+                            {% endif %}
+                            {% if report_path %}
+                                <a href="{{ url_for('download_file', filename=report_path) }}" class="btn btn-dark">Ver Informe HTML</a>
+                            {% endif %}
+                        {% endif %}
+                        <button type="submit" class="btn btn-success">Enviar</button>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        </form>
+        <div class="text-center mt-4">
+            <a href="/menu" class="btn btn-secondary">Atrás</a>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-OERcA2DkBnpI9h9Ywzt2T3lC64iwR09VWbq1ANUUywAoz1p+ANfWswv3+F9CWGkZ" crossorigin="anonymous"></script>
 </body>
 
-
-
 </html>
-{%endblock%}
+{% endblock %}

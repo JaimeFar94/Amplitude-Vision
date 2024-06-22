@@ -116,9 +116,9 @@
                     </tr>
                     <tr>
                         <th>Artritis</th>
-                        <td>{{ antecedentes[p.documento].artritis_per }}</td>
+                        <td>{{ antecedentes[p.documento].Artritis_per }}</td>
                         <th>Alergia</th>
-                        <td>{{ antecedentes[p.documento].alergia_per }}</td>
+                        <td>{{ antecedentes[p.documento].Alergia_per }}</td>
                     </tr>
                     <tr>
                         <th>Úlcera Gástrica</th>
@@ -141,122 +141,182 @@
                     </tr>
                     <tr>
                         <th>Motivo de la Consulta</th>
-                        <td>{{ mov_consulta[p.documento].mov_consulta }}</td>
+                        <td>{{ mov_consulta[p.documento].mov_consulta}}</td>
                         <th>Última Consulta</th>
-                        <td>{{ mov_consulta[p.documento].ulti_consulta }}</td>
+                        <td>{{ mov_consulta[p.documento].ulti_consulta}}</td>
                     </tr>
                     <tr>
-                        <th colspan="12" class="text-center">RX FINAL (Formulación)</th>
+                        <th colspan="12" class="text-center">Agudeza</th>
                     </tr>
                     <tr>
-                        <th>Ojo Derecho</th>
-                        <th>Esfera</th>
-                        <td>{{ mov_consulta[p.documento].esfera }}</td>
-                        <th>Cilindro</th>
-                        <td>{{ mov_consulta[p.documento].cilindro }}</td>
-                        <th>Eje</th>
-                        <td>{{ mov_consulta[p.documento].eje }}</td>
-                        <th>DP</th>
-                        <td>{{ mov_consulta[p.documento].dp }}</td>
-                        <th>VL20</th>
-                        <td>{{ mov_consulta[p.documento].vl20 }}</td>
-                        <th>VP20</th>
-                        <td>{{ mov_consulta[p.documento].vp20 }}</td>
-                        <th>ADD</th>
-                        <td>{{ mov_consulta[p.documento].add_0 }}</td>
+                        <th>VLSC</th>
+                        <td>{{mov_consulta[p.documento].vlsc_od}} </td>
+                        <td>{{mov_consulta[p.documento].vlsc_oi}} </td>
+                        <td>{{mov_consulta[p.documento].vlsc_ao}} </td>
+                        <td>{{mov_consulta[p.documento].vlsc_PH}} </td>
                     </tr>
+
                     <tr>
-                        <th>Ojo Izquierdo</th>
-                        <th>Esfera</th>
-                        <td>{{ mov_consulta[p.documento].esfera_1 }}</td>
-                        <th>Cilindro</th>
-                        <td>{{ mov_consulta[p.documento].cilindro_1 }}</td>
-                        <th>Eje</th>
-                        <td>{{ mov_consulta[p.documento].eje_1 }}</td>
-                        <th>DP</th>
-                        <td>{{ mov_consulta[p.documento].dp_1 }}</td>
-                        <th>VL20</th>
-                        <td>{{ mov_consulta[p.documento].vl20_1 }}</td>
-                        <th>VP20</th>
-                        <td>{{ mov_consulta[p.documento].vp20_1 }}</td>
-                        <th>ADD</th>
-                        <td>{{ mov_consulta[p.documento].add_1 }}</td>
+                        <th>VPSC</th>
+                        <td>{{mov_consulta[p.documento].vpsc_od}} </td>
+                        <td>{{mov_consulta[p.documento].vpsc_oi}} </td>
+                        <td>{{mov_consulta[p.documento].vpsc_ao}} </td>
+                        <td>{{mov_consulta[p.documento].vpsc_PH}} </td>
                     </tr>
-                    <tr>
-                        <th colspan="12" class="text-center">Visión</th>
-                    </tr>
-                    <tr>
-                        <th>VISIÓN LEJANA</th>
-                        <td>{{ vista[p.documento].vision_lejana }}</td>
-                        <th>VISIÓN PRÓXIMA</th>
-                        <td>{{ vista[p.documento].vision_proxima }}</td>
+
+                   <tr>
                         <th>DUCCIONES OD</th>
-                        <td>{{ vista[p.documento].ducciones_od }}</td>
+                        <td>{{mov_consulta[p.documento].ducciones_od }}</td>
                         <th>DUCCIONES OI</th>
-                        <td>{{ vista[p.documento].ducciones_oi }}</td>
+                        <td>{{mov_consulta[p.documento].ducciones_oi }}</td>
                         <th>PPC OD</th>
-                        <td>{{ vista[p.documento].ppc_od }}</td>
+                        <td>{{ mov_consulta[p.documento].ppc_od }}</td>
                         <th>PPC OI</th>
-                        <td>{{ vista[p.documento].ppc_oi }}</td>
-                    </tr>
-                    <tr>
-                        <th>OFTALMOSCOPIA</th>
-                        <th>OJO DERECHO</th>
-                        <td>{{ vista[p.documento].ojo_derecho }}</td>
-                        <th>OJO IZQUIERDO</th>
-                        <td>{{ vista[p.documento].ojo_izquierdo }}</td>
-                    </tr>
-                    <tr>
-                        <th>QUERATOMETRÍA</th>
-                        <th>OJO DERECHO</th>
-                        <td>{{ vista[p.documento].ojo_drc_querato }}</td>
-                        <th>OJO IZQUIERDO</th>
-                        <td>{{ vista[p.documento].ojo_izq_querato }}</td>
-                    </tr>
-                    <tr>
-                        <th>REFRACTOMETRÍA</th>
-                        <th>OJO DERECHO</th>
-                        <td>{{ vista[p.documento].ojo_drc_refac }}</td>
-                        <th>OJO IZQUIERDO</th>
-                        <td>{{ vista[p.documento].ojo_izq_refac }}</td>
-                    </tr>
-                    <tr>
-                        <th>RETINOSCOPIA</th>
-                    </tr>
-                    <tr>
-                        <th>OJO DERECHO</th>
-                        <th>Esfera</th>
-                        <td>{{ vista[p.documento].esfera_retino }}</td>
-                        <th>Cilindro</th>
-                        <td>{{ vista[p.documento].cilindro_retino }}</td>
-                        <th>Eje</th>
-                        <td>{{ vista[p.documento].eje_retino }}</td>
-                        <th>DP</th>
-                        <td>{{ vista[p.documento].dp_retino }}</td>
-                        <th>VL20</th>
-                        <td>{{ vista[p.documento].vl20_retino }}</td>
-                        <th>VP20</th>
-                        <td>{{ vista[p.documento].vp20_retino }}</td>
-                        <th>ADD</th>
-                        <td>{{ vista[p.documento].add_retino }}</td>
-                    </tr>
-                    <tr>
-                        <th>OJO IZQUIERDO</th>
-                        <th>Esfera</th>
-                        <td>{{ vista[p.documento].esfera_retino_1 }}</td>
-                        <th>Cilindro</th>
-                        <td>{{ vista[p.documento].cilindro_retino_1 }}</td>
-                        <th>Eje</th>
-                        <td>{{ vista[p.documento].eje_retino_1 }}</td>
-                        <th>DP</th>
-                        <td>{{ vista[p.documento].dp_retino_1 }}</td>
-                        <th>VL20</th>
-                        <td>{{ vista[p.documento].vl20_retino_1 }}</td>
-                        <th>VP20</th>
-                        <td>{{ vista[p.documento].vp20_retino_1 }}</td>
-                        <th>ADD</th>
-                        <td>{{ vista[p.documento].add_retino_1 }}</td>
-                    </tr>
+                        <td>{{ mov_consulta[p.documento].ppc_oi }}</td>
+                   </tr>
+                   <tr>
+                        <th>EXAMEN EXTERNO</th>
+                        <td>{{ mov_consulta[p.documento].examen_externo }}</td>
+                   </tr>
+                   <tr>
+                    <th>OFTALMOSCOPIA</th>
+                    <th>OJO DERECHO</th>
+                    <td>{{ vista[p.documento].OFTALMOSCOPIA_ojo_derecho }}</td>
+                    <th>OJO IZQUIERDO</th>
+                    <td>{{ vista[p.documento].OFTALMOSCOPIA_ojo_izquierdo }}</td>
+                </tr>
+                <tr>
+                    <th>QUERATOMETRÍA</th>
+                    <th>OJO DERECHO</th>
+                    <td>{{ vista[p.documento].ojo_drc_querato }}</td>
+                    <th>OJO IZQUIERDO</th>
+                    <td>{{ vista[p.documento].ojo_izq_querato}}</td>
+                </tr>
+                <tr>
+                    <th>RETINOSCOPIA</th>
+                </tr>
+                <tr>
+                    <th>OJO DERECHO</th>
+                    <th>Esfera</th>
+                    <td>{{vista[p.documento].esfera_retino}}</td>
+                    <th>Cilindro</th>
+                    <td>{{ vista[p.documento].cilindro_retino }}</td>
+                    <th>Eje</th>
+                    <td>{{ vista[p.documento].eje_retino }}</td>
+                    <th>DP</th>
+                    <td>{{ vista[p.documento].dp_retino }}</td>
+                    <th>VL20</th>
+                    <td>{{ vista[p.documento].vl20_retino }}</td>
+                    <th>VP20</th>
+                    <td>{{ vista[p.documento].vp20_retino }}</td>
+                    <th>ADD</th>
+                    <td>{{ vista[p.documento].add_retino }}</td>
+                </tr>
+                <tr>
+                    <th>OJO IZQUIERDO</th>
+                    <th>Esfera</th>
+                    <td>{{ vista[p.documento].esfera_retino_1 }}</td>
+                    <th>Cilindro</th>
+                    <td>{{ vista[p.documento].cilindro_retino_1 }}</td>
+                    <th>Eje</th>
+                    <td>{{ vista[p.documento].eje_retino_1 }}</td>
+                    <th>DP</th>
+                    <td>{{ vista[p.documento].dp_retino_1 }}</td>
+                    <th>VL20</th>
+                    <td>{{ vista[p.documento].vl20_retino_1 }}</td>
+                    <th>VP20</th>
+                    <td>{{ vista[p.documento].vp20_retino_1 }}</td>
+                    <th>ADD</th>
+                    <td>{{ vista[p.documento].add_retino_1 }}</td>
+                </tr>
+
+
+            <tr>
+                <th>Recomendación</th>
+                <td>{{ vista[p.documento].recomendación }}</td>
+            </tr>
+
+            <tr>
+                <th>Diagnostico </th>
+                <td>{{ vista[p.documento].diagnostico }}</td>
+            </tr>
+
+            <tr>
+                <th>Observación </th>
+                <td>{{ vista[p.documento].observación }}</td>
+            </tr>
+
+            <tr>
+                <th colspan="12" class="text-center">RX FINAL (Formulación)</th>
+            </tr>
+
+            <tr>
+                <th>Ojo Derecho</th>
+                <th>Esfera</th>
+                <td>{{ vista[p.documento].esfera }}</td>
+                <th>Cilindro</th>
+                <td>{{ vista[p.documento].cilindro }}</td>
+                <th>Eje</th>
+                <td>{{ vista[p.documento].eje }}</td>
+                <th>DP</th>
+                <td>{{ vista[p.documento].dp }}</td>
+                <th>VL20</th>
+                <td>{{ vista[p.documento].vl20 }}</td>
+                <th>VP20</th>
+                <td>{{ vista[p.documento].vp20 }}</td>
+                <th>ADD</th>
+                <td>{{ vista[p.documento].add_0 }}</td>
+            </tr>
+            <tr>
+                <th>Ojo Izquierdo</th>
+                <th>Esfera</th>
+                <td>{{ vista[p.documento].esfera_1 }}</td>
+                <th>Cilindro</th>
+                <td>{{ vista[p.documento].cilindro_1 }}</td>
+                <th>Eje</th>
+                <td>{{ vista[p.documento].eje_1 }}</td>
+                <th>DP</th>
+                <td>{{ vista[p.documento].dp_1 }}</td>
+                <th>VL20</th>
+                <td>{{ vista[p.documento].vl20_1 }}</td>
+                <th>VP20</th>
+                <td>{{ vista[p.documento].vp20_1 }}</td>
+                <th>ADD</th>
+                <td>{{ vista[p.documento].add_1 }}</td>
+            </tr>
+
+            <tr>
+                <th colspan="12" class="text-center">Formula Número</th>
+            </tr>
+                    <th>Tipo de Lente</th>
+                    <td>{{ vista[p.documento].tipo_lente }}</td>
+            <tr>
+            <tr>
+                <th>Montura</th>
+                <td>{{ vista[p.documento].montura }}</td>
+            </tr>
+            <tr>
+                <th>material</th>
+                <td>{{ vista[p.documento].material }}</td>
+            </tr>
+
+            <tr>
+                <th>Filtro</th>
+                <td>{{ vista[p.documento].filtro }}</td>
+            </tr>
+
+            <tr>
+                <th> Color</th>
+                <td>{{ vista[p.documento].color }}</td>
+            </tr>
+
+            <tr>
+                <th> Observación</th>
+                <td>{{ vista[p.documento].observacion }}</td>
+            </tr>
+
+            </tr>
+
                     <tr>
                         <td colspan="12" class="text-center">
                             <a href="/edit/{{ p.documento }}/update" class="btn btn-primary mr-2">Editar</a>

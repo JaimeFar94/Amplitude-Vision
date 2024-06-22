@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,15 +8,21 @@
     <!-- Enlace al archivo CSS de Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Q6E9RHvbIyZFJgXRQppFPbz2zPdSldc+3gt0AdHNQX+6hPBMZa5eag5AiM4eNPmW" crossorigin="anonymous">
 </head>
+
 <body>
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h3>¡Bienvenido!</h3>
+                    </div>
                     <div class="card-body">
-                        <h3 class="card-title text-center">¡Bienvenido!</h3>
-                        <p class="card-text text-center">Gracias por realizar el registro, sea bienvenido a la plataforma de Amplitud Visión.</p>
-                        <p class="card-text text-center">Le recordamos que su usuario registrado es: <strong>{{ user }}</strong></p>
+                        <p class="card-text text-center fs-5">Gracias por realizar el registro, sea bienvenido a la plataforma de Amplitud Visión.</p>
+                        <p class="card-text text-center fs-5">Le recordamos que su usuario registrado es: <strong>{{ user }}</strong></p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="#" class="btn btn-primary">Ir a la Plataforma</a>
                     </div>
                 </div>
             </div>
@@ -24,4 +31,5 @@
     <!-- Enlace al archivo JavaScript de Bootstrap (opcional, solo si necesitas componentes interactivos) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-k/JsvN8rWtX2D35EL3VjSLn0C6kV1FGT7nfEQ1KR3ayfg3pCvBohOs8fFLFyFjyJ" crossorigin="anonymous"></script>
 </body>
+
 </html>

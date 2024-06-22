@@ -305,229 +305,218 @@
             </table>
 
 
-            <table class="table">
-                <table class="table">
-                    <h6>RX FINAL (Formulación)</h6>
+            
+            <table class="table table-bordered">
+                <thead>
                     <tr>
-                        <th><label for="esfera">OJO DERECHO</label></th>
-
-                        <th><label for="tipo_lente">Esfera</label></th>
-                        <td><input type="text" name="esfera" id="esfera" class="form-control" placeholder="Esfera"
-                                value="{{mov_consulta.esfera}}"></td>
-                        <th><label for="tipo_lente">Cilindro</label></th>
-                        <td><input type="text" name="cilindro" id="cilindro" class="form-control" placeholder="Cilindro"
-                                value="{{mov_consulta.cilindro}}">></td>
-                        <th><label for="tipo_lente">Eje</label></th>
-                        <td><input type="text" name="eje" id="eje" class="form-control" placeholder="Eje"
-                                value="{{mov_consulta.eje}}"></td>
-                        <th><label for="tipo_lente">DP</label></th>
-                        <td><input type="text" name="dp" id="dp" class="form-control" placeholder="D.P"
-                                value="{{mov_consulta.dp}}"></td>
-                        <th><label for="tipo_lente">VL20</label></th>
-                        <td><input type="text" name="vl20" id="vl20" class="form-control" placeholder="AV VL20/"
-                                value="{{mov_consulta.vl20}}">
-                        </td>
-                        <th><label for="tipo_lente">VP20</label></th>
-                        <td><input type="text" name="vp20" id="vp20" class="form-control" placeholder="AV VP20/"
-                                value="{{ mov_consulta.vp20 }}">
-                        </td>
-                        <th><label for="tipo_lente">ADD</label></th>
-                        <td><input type="text" name="add_0" id="add_0" class="form-control" placeholder="ADD"
-                                value="{{ mov_consulta.add_0 }}"></td>
+                        <th colspan="5">
+                            <h6>Agudeza Visual</h6>
+                        </th>
                     </tr>
-
                     <tr>
-                        <th><label for="ojo_izq">OJO IZQUIERDO</label></th>
-                        <th><label for="tipo_lente">Esfera</label></th>
-                        <td><input type="text" name="esfera_1" id="esfera_1" class="form-control" placeholder="Esfera"
-                                value="{{mov_consulta.esfera_1}}">
-                        </td>
-                        <th><label for="tipo_lente">Cilindro</label></th>
-                        <td><input type="text" name="cilindro_1" id="cilindro_1" class="form-control"
-                                placeholder="Cilindro" value="{{mov_consulta.cilindro_1}}">></td>
-                        <th><label for="tipo_lente">Eje</label></th>
-                        <td><input type="text" name="eje_1" id="eje_1" class="form-control" placeholder="Eje"
-                                value="{{mov_consulta.eje_1}}"></td>
-                        <th><label for="tipo_lente">DP</label></th>
-                        <td><input type="text" name="dp_1" id="dp_1" class="form-control" placeholder="D.P"
-                                value="{{mov_consulta.dp_1}}"></td>
-                        <th><label for="tipo_lente">VL20</label></th>
-                        <td> <input type="text" name="vl20_1" id="vl20_1" class="form-control" placeholder="AV VL20/"
-                                value="{{mov_consulta.vl20_1}}">
-                        </td>
-                        <th><label for="tipo_lente">VP20</label></th>
-                        <td><input type="text" name="vp20_1" id="vp20_1" class="form-control" placeholder="AV VP20/"
-                                value="{{mov_consulta.vp20_1}}">
-                        </td>
-                        <th><label for="tipo_lente">ADD</label></th>
-                        <td><input type="text" name="add_1" id="add_1" class="form-control" placeholder="ADD"
-                                value="{{mov_consulta.add_1}}"></td>
+                        <th></th>
+                        <th>OD</th>
+                        <th>OI</th>
+                        <th>AO</th>
+                        <th>PH</th>
                     </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><label for="vlsc_od">VLSC</label></td>
+                        <td><input type="text" name="vlsc_od" id="vlsc_od" class="form-control" placeholder="OD" value="{{mov_consulta.vlsc_od}}"></td>
+                        <td><input type="text" name="vlsc_oi" id="vlsc_oi" class="form-control" placeholder="OI" value="{{mov_consulta.vlsc_oi}}"></td>
+                        <td><input type="text" name="vlsc_ao" id="vlsc_ao" class="form-control" placeholder="AO" value="{{mov_consulta.vlsc_ao}}"></td>
+                        <td><input type="text" name="vlsc_PH" id="vlsc_PH" class="form-control" placeholder="PH" value="{{mov_consulta.vlsc_PH}}" ></td>
+                    </tr>
+                    <tr>
+                        <td><label for="vpsc_od">VPSC</label></td>
+                        <td><input type="text" name="vpsc_od" id="vpsc_od" class="form-control" placeholder="OD" value="{{mov_consulta.vpsc_od}}" ></td>
+                        <td><input type="text" name="vpsc_oi" id="vpsc_oi" class="form-control" placeholder="OI" value="{{mov_consulta.vpsc_od}}"></td>
+                        <td><input type="text" name="vpsc_ao" id="vpsc_ao" class="form-control" placeholder="AO" value="{{mov_consulta.vpsc_od}}" ></td>
+                        <td><input type="text" name="vpsc_PH" id="vpsc_PH" class="form-control" placeholder="PH" value="{{mov_consulta.vpsc_od}}" ></td>
+                    </tr>
+                    <tr>
+                        <td><label for="ducciones_od">DUCCIONES OD</label></td>
+                        <td colspan="4"><input type="text" name="ducciones_od" id="ducciones_od" class="form-control" value="{{mov_consulta.ducciones_od}}"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="ducciones_oi">DUCCIONES OI</label></td>
+                        <td colspan="4"><input type="text" name="ducciones_oi" id="ducciones_oi" class="form-control"  value="{{mov_consulta.ducciones_oi}}"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="ppc_od">PPC OD</label></td>
+                        <td colspan="4"><input type="text" name="ppc_od" id="ppc_od" class="form-control"  value="{{mov_consulta.ppc_od}}"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="ppc_oi">PPC OI</label></td>
+                        <td colspan="4"><input type="text" name="ppc_oi" id="ppc_oi" class="form-control" value="{{mov_consulta.ppc_oi}}"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="examen_externo">EXAMEN EXTERNO</label></td>
+                        <td colspan="4"><textarea id="examen_externo" name="examen_externo" rows="4" class="form-control" placeholder="Ingrese la Información..." value="{{mov_consulta.examen_externo}}"></textarea></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th colspan="2">
+                            <h6>OFTALMOSCOPIA</h6>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><label for="OFTALMOSCOPIA_derecho">OJO DERECHO</label></td>
+                        <td><input type="text" name="OFTALMOSCOPIA_derecho" id="OFTALMOSCOPIA_derecho" class="form-control" value="{{vista.OFTALMOSCOPIA_derecho}}"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="OFTALMOSCOPIA_izquierdo">OJO IZQUIERDO</label></td>
+                        <td><input type="text" name="OFTALMOSCOPIA_izquierdo" id="OFTALMOSCOPIA_izquierdo" class="form-control" value="{{vista.OFTALMOSCOPIA_izquierdo}}"></td>
+                    </tr>
+                </tbody>
+                <thead>
+                    <tr>
+                        <th colspan="2">
+                            <h6>QUERATOMETRIA</h6>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><label for="ojo_drc_querato">OJO DERECHO</label></td>
+                        <td><input type="text" name="ojo_drc_querato" id="ojo_drc_querato" class="form-control" value="{{vista.ojo_drc_querato}}"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="ojo_izq_querat">OJO IZQUIERDO</label></td>
+                        <td><input type="text" name="ojo_izq_querat" id="ojo_izq_querato" class="form-control" value="{{vista.ojo_izq_querato}}"></td>
+                    </tr>
+                </tbody>
+                <thead>
+                    <tr>
+                        <th colspan="8">
+                            <h6>RETINOSCOPIA</h6>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>OJO DERECHO</th>
+                        <th>Esfera</th>
+                        <th>Cilindro</th>
+                        <th>Eje</th>
+                        <th>DP</th>
+                        <th>VL 20</th>
+                        <th>VP 20</th>
+                        <th>ADD</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><label for="esfera_retino">OJO DERECHO</label></td>
+                        <td><input type="text" name="esfera_retino" id="esfera_retino" class="form-control" placeholder="Esfera" value="{{vista.esfera_retino}}"></td>
+                        <td><input type="text" name="cilindro_retino" id="cilindro_retino" class="form-control" placeholder="Cilindro" value="{{vista.cilindro_retino}}"></td>
+                        <td><input type="text" name="eje_retino" id="eje_retino" class="form-control" placeholder="Eje" value="{{vista.eje_retino}}"></td>
+                        <td><input type="text" name="dp_retino" id="dp_retino" class="form-control" placeholder="D.P" value="{{vista.dp_retino}}"></td>
+                        <td><input type="text" name="vl20_retino" id="vl20_retino" class="form-control" placeholder="AV VL20/" value="{{vista.vl20_retino}}">></td>
+                        <td><input type="text" name="vp20_retino" id="vp20_retino" class="form-control" placeholder="AV VP20/"  value="{{vista.vp20_retino}}"></td>
+                        <td><input type="text" name="add_retino" id="add_retino" class="form-control" placeholder="ADD"  value="{{vista.add_retino}}"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="esfera_retino_1">OJO IZQUIERDO</label></td>
+                        <td><input type="text" name="esfera_retino_1" id="esfera_retino_1" class="form-control" placeholder="Esfera" value="{{vista.esfera_retino_1}}"></td>
+                        <td><input type="text" name="cilindro_retino_1" id="cilindro_retino_1" class="form-control" placeholder="Cilindro" value="{{vista.cilindro_retino_1}}"></td>
+                        <td><input type="text" name="eje_retino_1" id="eje_retino_1" class="form-control" placeholder="Eje" value="{{vista.eje_retino_1}}"></td>
+                        <td><input type="text" name="dp_retino_1" id="dp_retino_1" class="form-control" placeholder="D.P" value="{{vista.dp_retino_1}}"></td>
+                        <td><input type="text" name="vl20_retino_1" id="vl20_retino_1" class="form-control" placeholder="AV VL20/" value="{{vista.vl20_retino_1}}"></td>
+                        <td><input type="text" name="vp20_retino_1" id="vp20_retino_1" class="form-control" placeholder="AV VP20/" value="{{vista.vp20_retino_1}}"></td>
+                        <td><input type="text" name="add_retino_1" id="add_retino_1" class="form-control" placeholder="ADD" value="{{vista.add_retino_1}}"></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th colspan="13">
+                                <h6>RX FINAL (Formulación)</h6>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th>Esfera</th>
+                            <th>Cilindro</th>
+                            <th>Eje</th>
+                            <th>DP</th>
+                            <th>VL20</th>
+                            <th>VP20</th>
+                            <th>ADD</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><label for="esfera">OJO DERECHO</label></td>
+                            <td><input type="text" name="esfera" id="esfera" class="form-control" placeholder="Esfera" value="{{vista.esfera}}"></td>
+                            <td><input type="text" name="cilindro" id="cilindro" class="form-control" placeholder="Cilindro" value="{{vista.cilindro}}"></td>
+                            <td><input type="text" name="eje" id="eje" class="form-control" placeholder="Eje" value="{{vista.eje}}"></td>
+                            <td><input type="text" name="dp" id="dp" class="form-control" placeholder="D.P" value="{{vista.dp}}"></td>
+                            <td><input type="text" name="vl20" id="vl20" class="form-control" placeholder="AV VL20/" value="{{vista.vl20}}"></td>
+                            <td><input type="text" name="vp20" id="vp20" class="form-control" placeholder="AV VP20/" value="{{vista.vp20}}"></td>
+                            <td><input type="text" name="add_0" id="add_0" class="form-control" placeholder="ADD" value="{{vista.add_0}}"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="ojo_izq">OJO IZQUIERDO</label></td>
+                            <td><input type="text" name="esfera_1" id="esfera_1" class="form-control" placeholder="Esfera" value="{{vista.esfera_1}}"></td>
+                            <td><input type="text" name="cilindro_1" id="cilindro_1" class="form-control" placeholder="Cilindro" value="{{vista.cilindro_1}}"></td>
+                            <td><input type="text" name="eje_1" id="eje_1" class="form-control" placeholder="Eje" value="{{vista.eje_1}}"></td>
+                            <td><input type="text" name="dp_1" id="dp_1" class="form-control" placeholder="D.P" value="{{vista.dp_1}}"></td>
+                            <td><input type="text" name="vl20_1" id="vl20_1" class="form-control" placeholder="AV VL20/" value="{{vista.vl20_1}}"></td>
+                            <td><input type="text" name="vp20_1" id="vp20_1" class="form-control" placeholder="AV VP20/" value="{{vista.vp20_1}}"></td>
+                            <td><input type="text" name="add_1" id="add_1" class="form-control" placeholder="ADD" value="{{vista.add_1}}"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><label for="recomendación">Recomendación</label></td>
+                            <td colspan="6"><textarea id="recomendación" name="recomendación" rows="2" class="form-control" placeholder="Ingrese la Información..." value="{{vista.recomendación}}"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><label for="diagnostico">Diagnóstico</label></td>
+                            <td colspan="6"><textarea id="diagnostico" name="diagnostico" rows="2" class="form-control" placeholder="Ingrese la Información..." value="{{vista.diagnostico}}"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><label for="observación">Observación</label></td>
+                            <td colspan="6"><textarea id="observación" name="observación" rows="2" class="form-control" placeholder="Ingrese la Información..." value="{{vista.observación}}"></textarea></td>
+                        </tr>
+                    </tbody>
                 </table>
-            </table>
+                
+                <table class="table">
+                    <table class="table">
+                        <h6>Formula Número</h6>
 
-            <table class="table">
-                <h6>Formula Número</h6>
-                <th><label for="tipo_lente">Tipo de Lente</label></th>
-                <td><input type="text" name="tipo_lente" id="tipo_lente" class="form-control"
-                        placeholder="Tipo de Lente" value="{{mov_consulta.tipo_lente}}"></td>
-                <th><label for="montura">Montura</label></th>
-                <td><input type="text" name="montura" id="montura" class="form-control" placeholder="Montura"
-                        value="{{mov_consulta.montura}}">
-                </td>
-                <tr>
-                    <th><label for="material">Material</label></th>
-                    <td><input type="text" name="material" id="material" class="form-control" placeholder="Material"
-                            value="{{mov_consulta.material}}"></td>
-                    <th><label for="filtro">Filtro</label></th>
-                    <td><input type="text" name="filtro" id="filtro" class="form-control" placeholder="Filtro"
-                            value="{{mov_consulta.filtro}}">
-                    </td>
-                    <th><label for="color">Color</label></th>
-                    <td> <input type="text" name="color" id="color" class="form-control" placeholder="Color"
-                            value="{{mov_consulta.color}}">
-                    </td>
-                </tr>
-                <tr>
-                    <th><label for="obs">Observación</label></th>
-                    <td><input type="text" name="obs" id="obs" class="form-control" placeholder="Observación"
-                            value="{{mov_consulta.observacion}}">
-                    </td>
-                </tr>
-            </table>
+                        <th><label for="tipo_lente">Tipo de Lente</label></th>
+                        <td><input type="text" name="tipo_lente" id="tipo_lente" class="form-control"  placeholder="Tipo de Lente" value="{{vista.tipo_lente}}"></td>
+                        <th><label for="montura">Montura</label></th>
+                        <td><input type="text" name="montura" id="montura" class="form-control" placeholder="Montura" value="{{vista.montura}}">
+                        </td>
+                        <tr>
+                            <th><label for="material">Material</label></th>
+                            <td><input type="text" name="material" id="material" class="form-control"
+                                    placeholder="Material" value="{{vista.material}}"></td>
+                            <th><label for="filtro">Filtro</label></th>
+                            <td><input type="text" name="filtro" id="filtro" class="form-control" placeholder="Filtro" value="{{vista.filtro}}">
+                            </td>
+                            <th><label for="color">Color</label></th>
+                            <td><input type="text" name="color" id="color" class="form-control" placeholder="Color" value="{{vista.color}}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="obs">Observación</label></th>
+                            <td><input type="text" name="obs" id="obs" class="form-control" placeholder="Observación" value="{{vista.obs}}">
+                            </td>
+                        </tr>
+                    </table>
 
-            <table class="table">
-                <tr>
-                    <th><label for="vision_lejos">VISIÓN LEJANA</label> </th>
-                    <td><input type="text" name="vision_lejos" id="vision_lejos" class="form-control"
-                            value="{{vista.vision_lejana}}"></td>
-                </tr>
-
-                <th><label for="vision_proxima">VISION PRÓXIMA</label></th>
-
-                <td><input type="text" name="vision_proxima" id="vision_proxima" class="form-control"
-                        value="{{vista.vision_proxima}}"></td>
-                </tr>
-                <tr>
-                    <th><label for="ducciones_od">DUCCIONES OD</label></th>
-
-                    <td><input type="text" name="ducciones_od" id="ducciones_od" class="form-control"
-                            value="{{vista.ducciones_od}}"></td>
-                </tr>
-                <tr>
-                    <th><label for="ducciones_oi">DUCCIONES OI</label></th>
-
-                    <td><input type="text" name="ducciones_oi" id="ducciones_oi" class="form-control"
-                            value="{{vista.ducciones_oi}}"></td>
-                </tr>
-                <tr>
-                    <th><label for="ppc_od">PPC OD</label></th>
-
-                    <td><input type="text" name="ppc_od" id="ppc_od" class="form-control" value="{{vista.ppc_od}}"></td>
-                </tr>
-                <tr>
-                    <th><label for="ppc_oi">PPC OI</label></th>
-
-                    <td><input type="text" name="ppc_oi" id="ppc_oi" class="form-control" value="{{vista.ppc_oi}}"></td>
-                </tr>
-
-
-                <tr>
-                    <th><label>OFTALMOSCOPIA</label> </th>
-                </tr>
-                <tr>
-                    <th><label for="ojo_derecho">OJO DERECHO</label></th>
-                    <td><input type="text" name="ojo_derecho" id="ojo_derecho" class="form-control"
-                        value="{{vista.ojo_derecho}}"></td>
-                    <th><label for="ojo_izqui">OJO IZQUIERDO</label></th>
-                    <td><input type="text" name="ojo_izquierdo" id="ojo_izquierdo" class="form-control"
-                        value="{{vista.ojo_izquierdo}}"></td>
-                </tr>
-                <tr>
-                    <th><label>QUERATOMETRIA</label> </th>
-                </tr>
-
-                <tr>
-                    <th><label for="ojo_dere">OJO DERECHO</label></th>
-                    <td><input type="text" name="ojo_dere" id="ojo_dere" class="form-control"
-                            value="{{vista.ojo_drc_querato}}"></td>
-                    <th><label for="ojo_izqui">OJO IZQUIERDO</label></th>
-                    <td><input type="text" name="ojo_izqui" id="ojo_izqui" class="form-control"
-                            value="{{vista.ojo_izq_querato}}"></td>
-                </tr>
-
-                <tr>
-                    <th><label>REFACTROMETRIA</label> </th>
-                </tr>
-                <tr>
-
-                    <th><label for="ojo_derch">OJO DERECHO</label></th>
-                    <td><input type="text" name="ojo_derch" id="ojo_derch" class="form-control"
-                            value="{{vista.ojo_drc_refac}}"></td>
-                    <th><label for="ojo_izquier">OJO IZQUIERDO</label></th>
-                    <td><input type="text" name="ojo_izquier" id="ojo_izquier" class="form-control"
-                            value="{{vista.ojo_izq_refac}}"></td>
-                </tr>
-
-
-                <tr>
-                    <th><label>RETINOSCOPIA</label> </th>
-                </tr>
-                <tr>
-
-                    <th><label for="esfera">OJO DERECHO</label></th>
-
-                    <th><label for="tipo_lente">Esfera</label></th>
-                    <td><input type="text" name="esfera" id="esfera" class="form-control" placeholder="Esfera"
-                            value="{{vista.esfera_retino}}"></td>
-                    <th><label for="tipo_lente">Cilindro</label></th>
-                    <td><input type="text" name="cilindro" id="cilindro" class="form-control" placeholder="Cilindro"
-                            value="{{vista.cilindro_retino}}"></td>
-                    <th><label for="tipo_lente">Eje</label></th>
-                    <td><input type="text" name="eje" id="eje" class="form-control" placeholder="Eje"
-                            value="{{vista.eje_retino}}"></td>
-                    <th><label for="tipo_lente">DP</label></th>
-                    <td><input type="text" name="dp" id="dp" class="form-control" placeholder="D.P"
-                            value="{{vista.dp_retino}}"></td>
-                    <th><label for="tipo_lente">VL 20</label></th>
-                    <td><input type="text" name="vl20" id="vl20" class="form-control" placeholder="AV VL20/"
-                            value="{{vista.vl20_retino}}"></td>
-                    <th><label for="tipo_lente">VP 20</label></th>
-                    <td><input type="text" name="vp20" id="vp20" class="form-control" placeholder="AV VP20/"
-                            value="{{vista.vp20_retino}}"></td>
-                    <th><label for="tipo_lente">ADD</label></th>
-                    <td><input type="text" name="add" id="add" class="form-control" placeholder="ADD"
-                            value="{{vista.add_retino}}"></td>
-                </tr>
-                <tr>
-                    <th><label for="ojo_izq">OJO IZQUIERDO</label></th>
-
-                    <th><label for="tipo_lente">Esfera</label></th>
-                    <td><input type="text" name="esfera_1" id="esfera_1" class="form-control" placeholder="Esfera"
-                            value="{{vista.esfera_retino_1}}"> </td>
-                    <th><label for="tipo_lente">Cilindro</label></th>
-                    <td><input type="text" name="cilindro_1" id="cilindro_1" class="form-control" placeholder="Cilindro"
-                            value="{{vista.cilindro_retino_1}}">
-                    </td>
-                    <th><label for="tipo_lente">Eje</label></th>
-                    <td><input type="text" name="eje_1" id="eje_1" class="form-control" placeholder="Eje"
-                            value="{{vista.eje_retino_1}}"></td>
-                    <th><label for="tipo_lente">DP</label></th>
-                    <td><input type="text" name="dp_1" id="dp_1" class="form-control" placeholder="D.P"
-                            value="{{vista.dp_retino_1}}"></td>
-                    <th><label for="tipo_lente">VL 20</label></th>
-                    <td><input type="text" name="vl20_1" id="vl20_1" class="form-control" placeholder="AV VL20/"
-                            value="{{vista.vl20_retino_1}}">
-                    </td>
-                    <th><label for="tipo_lente">VP 20</label></th>
-                    <td><input type="text" name="vp20_1" id="vp20_1" class="form-control" placeholder="AV VP20/"
-                            value="{{vista.vp20_retino_1}}">
-                    </td>
-                    <th><label for="tipo_lente">ADD</label></th>
-                    <td> <input type="text" name="add_1" id="add_1" class="form-control" placeholder="ADD"
-                            value="{{vista.add_retino_1}}"></td>
-                </tr>
-            </table>
 
 
 

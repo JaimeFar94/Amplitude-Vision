@@ -7,16 +7,48 @@
     <title>Amplitude Vision</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-        <link rel="stylesheet" href="/main.css"/>
-
+    <link rel="stylesheet" href="/main.css" />
     <style>
-        
-
+        body {
+            background-color: #f8f9fa; /* Color de fondo claro */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding-top: 60px; /* Ajuste para la navbar fija */
+        }
+        .navbar {
+            background-color: #e3f2fd; /* Color de navbar claro */
+        }
+        .navbar-brand {
+            font-weight: bold;
+            color: #007bff !important;
+        }
+        .nav-link {
+            color: #007bff !important;
+        }
+        .container {
+            flex: 1;
+            margin-top: 20px;
+        }
+        footer {
+            background-color: #e3f2fd; /* Color de footer claro */
+            color: #007bff;
+            padding: 10px 0;
+            position: relative;
+            width: 100%;
+            bottom: 0;
+        }
+        footer a {
+            color: #007bff;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 
-<body >
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+<body>
+    <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Amplitude Vision</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -24,18 +56,17 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto {% if user_authenticated %}nav-logged-in{% endif %}">
-
-                    {% if not user_authenticated %}
-                                            <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/">Home</a>
-                    </li>
+                <ul class="navbar-nav ms-auto">
+                    {% if not session.user_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link active" href="/login">Iniciar sesión</a>
+                            <a class="nav-link" aria-current="page" href="/">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">Iniciar sesión</a>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link active" href="{{ url_for('logout') }}">Cerrar sesión</a>
+                            <a class="nav-link" href="{{ url_for('logout') }}">Cerrar sesión</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -43,14 +74,32 @@
         </div>
     </nav>
 
-    {% block content %}
-    <!-- Contenido específico de cada página va aquí -->
-    {% endblock %}
+    <div class="container">
 
-    <!-- Agrega tus scripts o contenido adicional al final del cuerpo según sea necesario -->
+        <!-- Para que los mensages flash salgan en los templates  -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+        
+        {% block content %}
+        <!-- Contenido específico de cada página va aquí -->
+        {% endblock %}
+    </div>
 
+    <footer class="text-center py-3 mt-4">
+        <div class="container">
+            <p class="mb-0">&copy; 2024 Amplitude Vision. Todos los derechos reservados. <a href="/privacy">Política de Privacidad</a> | <a href="/terms">Términos de Servicio</a></p>
+        </div>
+    </footer>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-OERcA2DkBnpI9h9Ywzt2T3lC64iwR09VWbq1ANUUywAoz1p+ANfWswv3+F9CWGkZ" crossorigin="anonymous"></script>
 </body>
 
 </html>
