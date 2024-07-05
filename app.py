@@ -23,7 +23,7 @@ app.secret_key = '876-105-169'
 
 
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/medico'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://b65dd86ce1e7f8:b7356d9d@us-cluster-east-01.k8s.cleardb.net/heroku_1c8a7aa3361979f'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://bd829999e06ecc:357cfa20@us-cluster-east-01.k8s.cleardb.net/heroku_2f1494a80fb654d'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #configuración de las cookies 
