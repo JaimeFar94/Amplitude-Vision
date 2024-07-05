@@ -447,6 +447,7 @@ def login():
                 print('Usuario o contraseña incorrectos')
                 flash('Usuario o contraseña incorrectos', 'danger')
         else:
+            flash('Usuario o contraseña incorrectos', 'danger')
             print('Usuario o contraseña incorrectos')
 
     return render_template('login.html')
