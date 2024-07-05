@@ -870,7 +870,7 @@ def eliminar_paciente(documento):
 class Inventory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     fecha = db.Column(db.DateTime)
-    sede = db.Column(db.Integer)
+    sede = db.Column(db.String(40))
     montura = db.Column(db.String(40))
     cantidad_montura = db.Column(db.BigInteger)
     marca = db.Column(db.String(40))
