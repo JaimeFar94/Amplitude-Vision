@@ -303,25 +303,58 @@
                         <td><input type="text" name="vpsc_PH" id="vpsc_PH" class="form-control" placeholder="PH"></td>
                     </tr>
                     <tr>
-                        <td><label for="ducciones_od">DUCCIONES OD</label></td>
-                        <td colspan="4"><input type="text" name="ducciones_od" id="ducciones_od" class="form-control"></td>
+                        <td><label for="vpsc_od">VLCC</label></td>
+                        <td><input type="text" name="vlcc_od" id="vlcc_od" class="form-control" placeholder="OD"></td>
+                        <td><input type="text" name="vlcc_oi" id="vlcc_oi" class="form-control" placeholder="OI"></td>
+                        <td><input type="text" name="vlcc_ao" id="vlcc_ao" class="form-control" placeholder="AO"></td>
+                        <td><input type="text" name="vlcc_PH" id="vlcc_PH" class="form-control" placeholder="PH"></td>
                     </tr>
                     <tr>
-                        <td><label for="ducciones_oi">DUCCIONES OI</label></td>
-                        <td colspan="4"><input type="text" name="ducciones_oi" id="ducciones_oi" class="form-control"></td>
+                        <td><label for="vpsc_od">VPCC</label></td>
+                        <td><input type="text" name="vpcc_od" id="vpcc_od" class="form-control" placeholder="OD"></td>
+                        <td><input type="text" name="vpcc_oi" id="vpcc_oi" class="form-control" placeholder="OI"></td>
+                        <td><input type="text" name="vpcc_ao" id="vpcc_ao" class="form-control" placeholder="AO"></td>
+                        <td><input type="text" name="vpcc_PH" id="vpcc_PH" class="form-control" placeholder="PH"></td>
+                    </tr>
+                    <th colspan="5">
+                        <h6>Lensometria</h6>
+                    </th>
+                    <tr>
+                        <td><label for="lensometria_od"> OD</label></td>
+                        <td colspan="4"><input type="text" name="lensometria_od" id="lensometria_od" class="form-control"></td>
                     </tr>
                     <tr>
-                        <td><label for="ppc_od">PPC OD</label></td>
-                        <td colspan="4"><input type="text" name="ppc_od" id="ppc_od" class="form-control"></td>
+                        <td><label for="lensometria_oi"> OI</label></td>
+                        <td colspan="4"><input type="text" name="lensometria_oi" id="lensometria_oi" class="form-control"></td>
                     </tr>
                     <tr>
-                        <td><label for="ppc_oi">PPC OI</label></td>
-                        <td colspan="4"><input type="text" name="ppc_oi" id="ppc_oi" class="form-control"></td>
+                        <td><label for="lensometria_add">ADD</label></td>
+                        <td colspan="4"><input type="text" name="lensometria_add" id="lensometria_add" class="form-control"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="lensometria_tipo_lente">Tipo de Lente</label></td>
+                        <td colspan="4"><input type="text" name="lensometria_tipo_lente" id="lensometria_tipo_lente" class="form-control"></td>
                     </tr>
                     <tr>
                         <td><label for="examen_externo">EXAMEN EXTERNO</label></td>
                         <td colspan="4"><textarea id="examen_externo" name="examen_externo" rows="4" class="form-control" placeholder="Ingrese la Información..."></textarea></td>
                     </tr>
+                    <th colspan="5">
+                        <h6>Examen Motor</h6>
+                    </th>
+                    <tr>
+                        <td><label for="ppc">PPC</label></td>
+                        <td colspan="4"><input type="text" name="ppc" id="ppc" class="form-control"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="ducciones">Ducciones</label></td>
+                        <td colspan="4"><input type="text" name="ducciones" id="ducciones" class="form-control"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="cover_test">Cover Test</label></td>
+                        <td colspan="4"><input type="text" name="cover_test" id="cover_test" class="form-control"></td>
+                    </tr>
+
                 </tbody>
             </table>
             
@@ -329,36 +362,36 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th colspan="2">
+                        <th colspan="10">
                             <h6>OFTALMOSCOPIA</h6>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><label for="OFTALMOSCOPIA_ojo_derecho">OJO DERECHO</label></td>
-                        <td><input type="text" name="OFTALMOSCOPIA_ojo_derecho" id="OFTALMOSCOPIA_ojo_derecho" class="form-control"></td>
+                        <td colspan="3" ><label for="OFTALMOSCOPIA_ojo_derecho">OJO DERECHO</label></td>
+                        <td colspan="3" ><input type="text" name="OFTALMOSCOPIA_ojo_derecho" id="OFTALMOSCOPIA_ojo_derecho" class="form-control"></td>
                     </tr>
                     <tr>
-                        <td><label for="OFTALMOSCOPIA_ojo_izquierdo">OJO IZQUIERDO</label></td>
-                        <td><input type="text" name="OFTALMOSCOPIA_ojo_izquierdo" id="OFTALMOSCOPIA_ojo_izquierdo" class="form-control"></td>
+                        <td colspan="3" ><label for="OFTALMOSCOPIA_ojo_izquierdo">OJO IZQUIERDO</label></td>
+                        <td colspan="3"><input type="text" name="OFTALMOSCOPIA_ojo_izquierdo" id="OFTALMOSCOPIA_ojo_izquierdo" class="form-control"></td>
                     </tr>
                 </tbody>
                 <thead>
                     <tr>
-                        <th colspan="2">
+                        <th colspan="10">
                             <h6>QUERATOMETRIA</h6>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><label for="ojo_drc_querato">OJO DERECHO</label></td>
-                        <td><input type="text" name="ojo_drc_querato" id="ojo_drc_querato" class="form-control"></td>
+                        <td colspan="3" ><label for="ojo_drc_querato">OJO DERECHO</label></td>
+                        <td colspan="3" ><input type="text" name="ojo_drc_querato" id="ojo_drc_querato" class="form-control"></td>
                     </tr>
                     <tr>
-                        <td><label for="ojo_izq_querat">OJO IZQUIERDO</label></td>
-                        <td><input type="text" name="ojo_izq_querato" id="ojo_izq_querato" class="form-control"></td>
+                        <td colspan="3" ><label for="ojo_izq_querat">OJO IZQUIERDO</label></td>
+                        <td colspan="3"><input type="text" name="ojo_izq_querato" id="ojo_izq_querato" class="form-control"></td>
                     </tr>
                 </tbody>
                 <thead>
@@ -550,8 +583,8 @@
                     <button type="button" class="btn btn-success" onclick="imprimirDatos()">Imprimir</button>
         </div>
         </table>
-        <button type="submit" class="btn btn-primary">Enviar </button>
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-primary">Enviar </button>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     </form>
     <a href="/menu" class="btn btn-secondary">Atrás</a>
 

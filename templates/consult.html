@@ -8,8 +8,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CONSULT</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .section-title {
+            background-color: #343a40;
+            color: white;
+            padding: 10px;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+        }
+        .btn-primary, .btn-danger, .btn-secondary {
+            margin-right: 10px;
+        }
+    </style>
 </head>
-
 <body>
 
     <div class="container mt-4">
@@ -163,17 +175,35 @@
                         <td>{{mov_consulta[p.documento].vpsc_ao}} </td>
                         <td>{{mov_consulta[p.documento].vpsc_PH}} </td>
                     </tr>
+                    <tr>
+                        <th>VLCC</th>
+                        <td>{{mov_consulta[p.documento].vlcc_od}} </td>
+                        <td>{{mov_consulta[p.documento].vlcc_oi}} </td>
+                        <td>{{mov_consulta[p.documento].vlcc_ao}} </td>
+                        <td>{{mov_consulta[p.documento].vlcc_PH}} </td>
+                    </tr>
 
-                   <tr>
-                        <th>DUCCIONES OD</th>
-                        <td>{{mov_consulta[p.documento].ducciones_od }}</td>
-                        <th>DUCCIONES OI</th>
-                        <td>{{mov_consulta[p.documento].ducciones_oi }}</td>
-                        <th>PPC OD</th>
-                        <td>{{ mov_consulta[p.documento].ppc_od }}</td>
-                        <th>PPC OI</th>
-                        <td>{{ mov_consulta[p.documento].ppc_oi }}</td>
-                   </tr>
+                    <tr>
+                        <th>VPCC</th>
+                        <td><td></td> </td>
+                        <td>{{mov_consulta[p.documento].vpcc_oi}} </td>
+                        <td>{{mov_consulta[p.documento].vpcc_ao}} </td>
+                        <td>{{mov_consulta[p.documento].vpcc_PH}} </td>
+                    </tr>
+
+                    <tr>
+                        <th>LENSOMETRIA</th>
+                        <td>{{mov_consulta[p.documento].lensometria_od}}</td>
+                        <td>{{mov_consulta[p.documento].lensometria_oi}}</td>
+                        <td>{{mov_consulta[p.documento].lensometria_add}}</td>
+                        <td>{{mov_consulta[p.documento].lensometria_tipo_lente}}</td>
+                    </tr>
+                    <tr>
+                        <th>Examen Motor</th>
+                        <td>{{mov_consulta[p.documento].examen_ppc}}</td>
+                        <td>{{mov_consulta[p.documento].examen_ducciones}}</td>
+                        <td>{{mov_consulta[p.documento].examen_cover_test}}</td>
+                    </tr>
                    <tr>
                         <th>EXAMEN EXTERNO</th>
                         <td>{{ mov_consulta[p.documento].examen_externo }}</td>
@@ -349,6 +379,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 
 </html>

@@ -12,3 +12,5 @@ marshmallow-sqlalchemy
 Flask-Migrate
 pymysql
 mysqlclient
+Flask-Principal
+Flask-Login

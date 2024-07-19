@@ -16,14 +16,20 @@ from flask import render_template, request, send_file
 import ydata_profiling
 import xml.etree.ElementTree as ET
 import tempfile
-
+from flask_principal import Principal, Permission, RoleNeed, identity_loaded, UserNeed, Identity, AnonymousIdentity, identity_changed
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+import logging
+from logging.handlers import RotatingFileHandler
+import ydata_profiling
+import xml.etree.ElementTree as ET
+import tempfile
 
 app = Flask(__name__ , template_folder='templates')
 app.secret_key = '876-105-169'
 
 
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/medico'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://bd829999e06ecc:357cfa20@us-cluster-east-01.k8s.cleardb.net/heroku_2f1494a80fb654d'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://jfarfan:2BDpVtjrjtAM6hMF4HOKrmlbHkbgpPCi@dpg-cqd6l3eehbks73bqn3k0-a.oregon-postgres.render.com/medico_jl29'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #configuración de las cookies 
@@ -31,10 +37,18 @@ app.config['SESSION_COOKIE_SECURE'] = True  # Usar solo en producción con HTTPS
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
+# Inicializaciones de Flask-Principal y Flask-Login
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+principals = Principal(app)
 
+#Definir los roles de administrador.
+admin_permission = Permission(RoleNeed('admin'))
+consulta_permission = Permission(RoleNeed('consulta'))
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
+
 
 
 #Para envio de Correos 
@@ -52,25 +66,45 @@ mail = Mail(app)
 csrf = CSRFProtect(app)
 
 
+#Crear un directorio de los logs
+
+if not os.path.exists('logs'):
+    os.mkdir('logs')
+
+
+#Manejador  de archivos
+
+file_handler = RotatingFileHandler('logs/app.log', maxBytes=10240, backupCount=10)
+file_handler.setFormatter(logging.Formatter(
+    '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
+
+# Configurar el nivel de logging y añadir el manejador a la aplicación Flask
+file_handler.setLevel(logging.INFO)
+
+app.logger.addHandler(file_handler)
+app.logger.setLevel(logging.INFO)
+app.logger.info('Aplicación iniciada')
 
 # Login
-class signup(db.Model):
+class signup(UserMixin,db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(40), unique=True)
     correo = db.Column(db.String(70))
     usuario = db.Column(db.String(40), unique=True)
     contrasena = db.Column(db.String(40))
+    role = db.Column(db.String(50))
 
-    def __init__(self, nombre, correo, usuario, contrasena):
+    def __init__(self, nombre, correo, usuario, contrasena, role):
         self.nombre = nombre
         self.correo = correo
         self.usuario = usuario
         self.contrasena = contrasena
+        self.role = role
 
 
 class TaskSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'nombre', 'correo', 'usuario', 'contrasena')
+        fields = ('id', 'nombre', 'correo', 'usuario', 'contrasena', 'role')
 
 
 task_schema = TaskSchema()
@@ -80,13 +114,13 @@ task_schema = TaskSchema(many=True)
 # Pacientes
 class paciente(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    documento = db.Column(db.BigInteger, unique=True, nullable=False)
+    documento = db.Column(db.Integer, unique=True, nullable=False)
     tipo = db.Column(db.String(10))
     nombre_paciente = db.Column(db.String(200))
-    edad = db.Column(db.BigInteger)
+    edad = db.Column(db.Integer)
     genero = db.Column(db.String(50))
     correo_electronico = db.Column(db.String(255))
-    direccion = db.Column(db.String(255))
+    direccion = db.Column(db.Text)
     telefono = db.Column(db.String(40))
     eps = db.Column(db.String(50))
     cargo = db.Column(db.String(100))
@@ -195,20 +229,33 @@ class MovConsulta(db.Model):
     vpsc_oi = db.Column(db.String(50))
     vpsc_ao = db.Column(db.String(50))
     vpsc_PH = db.Column(db.String(50))
-    ducciones_od = db.Column(db.String(40))
-    ducciones_oi = db.Column(db.String(40))
-    ppc_od = db.Column(db.String(40))
-    ppc_oi = db.Column(db.String(40))
+    vlcc_od = db.Column(db.String(50))
+    vlcc_oi = db.Column(db.String(50))
+    vlcc_ao = db.Column(db.String(50))
+    vlcc_PH = db.Column(db.String(50))
+    vpcc_od = db.Column(db.String(50))
+    vpcc_oi = db.Column(db.String(50))
+    vpcc_ao = db.Column(db.String(50))
+    vpcc_PH = db.Column(db.String(50))
+    lensometria_od = db.Column(db.String(50))
+    lensometria_oi = db.Column(db.String(50))
+    lensometria_add = db.Column(db.String(50))
+    lensometria_tipo_lente = db.Column(db.String(50))
     examen_externo = db.Column(db.String(300))
-
+    examen_ppc = db.Column(db.String(50))
+    examen_ducciones =  db.Column(db.String(50))
+    examen_cover_test =  db.Column(db.String(50))
     paciente_documento = db.Column(db.Integer, db.ForeignKey(
         'paciente.documento', onupdate='CASCADE', ondelete='CASCADE'))
     paciente = db.relationship(
         'paciente', backref=db.backref('MovConsulta', lazy=True))
 
     def __init__(self, mov_consulta=None, ulti_consulta=None, vlsc_od=None, vlsc_oi=None, vlsc_ao=None,
-                 vlsc_PH=None, vpsc_od=None, vpsc_oi=None, vpsc_ao=None, vpsc_PH=None, ducciones_od=None,
-                 ducciones_oi=None, ppc_od=None, ppc_oi=None, examen_externo=None):
+                 vlsc_PH=None, vpsc_od=None, vpsc_oi=None, vpsc_ao=None, vpsc_PH=None,vlcc_od=None, vlcc_oi=None, vlcc_ao=None,
+                 vlcc_PH=None, vpcc_od=None, vpcc_oi=None, vpcc_ao=None, vpcc_PH=None, lensometria_od = None, 
+                  lensometria_oi = None, lensometria_add =None,lensometria_tipo_lente =None, examen_externo=None,
+                  examen_ppc = None,examen_ducciones= None, examen_cover_test= None,):
+        
         self.mov_consulta = mov_consulta
         self.ulti_consulta = ulti_consulta
         self.vlsc_od = vlsc_od
@@ -219,16 +266,29 @@ class MovConsulta(db.Model):
         self.vpsc_oi = vpsc_oi
         self.vpsc_ao = vpsc_ao
         self.vpsc_PH = vpsc_PH
-        self.ducciones_od = ducciones_od
-        self.ducciones_oi = ducciones_oi
-        self.ppc_od = ppc_od
-        self.ppc_oi = ppc_oi
+        self.vlcc_od = vlcc_od
+        self.vlcc_oi = vlcc_oi
+        self.vlcc_ao = vlcc_ao
+        self.vlcc_PH = vlcc_PH
+        self.vpcc_od = vpcc_od
+        self.vpcc_oi = vpcc_oi
+        self.vpcc_ao = vpcc_ao
+        self.vpcc_PH = vpcc_PH
+        self.lensometria_od = lensometria_od
+        self.lensometria_oi = lensometria_oi
+        self.lensometria_add = lensometria_add
+        self.lensometria_tipo_lente = lensometria_tipo_lente
         self.examen_externo = examen_externo
+        examen_ppc = examen_ppc
+        examen_ducciones = examen_ducciones
+        examen_cover_test=examen_cover_test
 
 class TaskSchema(ma.Schema):
     class Meta:
         fields = ('mov_consulta', 'ulti_consulta', 'vlsc_od', 'vlsc_oi', 'vlsc_ao', 'vlsc_PH', 'vpsc_od',
-                  'vpsc_oi', 'vpsc_ao', 'vpsc_PH', 'ducciones_od', 'ducciones_oi', 'ppc_od', 'ppc_oi')
+                  'vpsc_oi', 'vpsc_ao', 'vpsc_PH','vlcc_od', 'vlcc_oi', 'vlcc_ao', 'vlcc_PH', 'vpcc_od',
+                  'vpcc_oi', 'vpcc_ao', 'vpcc_PH', 'lensometria_od','lensometria_oi','lensometria_add',
+                   'lensometria_tipo_lente','examen_externo', 'examen_ppc', 'examen_ducciones','examen_cover_test')
 
 task_schema = TaskSchema()
 tasks_schema = TaskSchema(many=True)
@@ -346,23 +406,7 @@ class TaskSchema(ma.Schema):
 task_schema = TaskSchema()
 task_schema = TaskSchema(many=True)
 
-# Registro de Eliminar
-
-
-class delete(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    eliminado = db.Column(db.Boolean, default=False)
-    fecha_eliminacion = db.Column(db.DateTime)
-    nombre_eliminado = db.Column(db.String(100))
-    documento_eliminado = db.Column(db.String(100))
-
-    class TaskSchema(ma.Schema):
-        class Meta:
-            flieds = ('eliminado', 'fecha_eliminacion',
-                      'nombre_eliminado', 'documento_eliminado')
-
 # Autenticación del usuario
-
 
 def get_user_authenticated():  # se crea la funcion para la autenticación
     user_authenticated = False
@@ -379,10 +423,46 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+#Asignacion de los roles de los usuarios:
+
+def role_required(*allowed_roles):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if 'role' not in session or session['role'] not in allowed_roles:
+                flash('No tienes permiso para acceder a esta página', 'danger')
+                return redirect(url_for('home'))
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
+
+# Decoradores específicos para admin y consulta
+def admin_required(f):
+    return role_required('admin')(f)
+
+def consulta_required(f):
+    return role_required('consulta', 'admin')(f)
+
+
+# Define la función user_loader
+@login_manager.user_loader
+def load_user(user_id):
+    return signup.query.get(int(user_id))
 
 @app.route("/")
+@csrf.exempt
 def home():
         return render_template('home.html')
+
+@app.route("/privacy")
+@csrf.exempt
+def privacy():
+    return render_template('privacy.html')
+
+@app.route("/terms")
+@csrf.exempt
+def terms():
+    return render_template('terms.html')
 
 
 @app.route("/signup", methods=['GET', 'POST'])
@@ -393,6 +473,7 @@ def signup_user():
         email = request.form['email']
         username = request.form['user']
         password = request.form['password']
+        role = request.form['role']
 
         # Codificar la contraseña
         password_bytes = password.encode('utf-8')
@@ -400,24 +481,32 @@ def signup_user():
         # Aplicar el modo MD5 dentro de la contraseña
         hashed_password = hashlib.md5(password_bytes).hexdigest()
 
-        user = signup(
-            nombre=name,
-            correo=email,
-            usuario=username,
-            contrasena=hashed_password
+        #Verificar si un usuario ya esta registrado
 
-        )
-        db.session.add(user)
-        db.session.commit()
+        existing_user = signup.query.filter((signup.usuario == username )| (signup.correo == email)).first()
+        if existing_user:
+            flash('El usuario o el Correo electronico ya se encuentra registrado', 'danger')
+            return render_template('signup.html')
+        else:
+            user = signup(
+                nombre=name,
+                correo=email,
+                usuario=username,
+                contrasena=hashed_password,
+                role = role
 
-        msg = Message('El registro del Usuario ha sido satisfactoriamente' ,
-                      sender = app.config['MAIL_PASSWORD'],
-                      recipients=[user.correo])
-        msg.html = render_template('email.html' , user = user.usuario )
-        mail.send(msg)
-        flash('Usuario registrado correctamente, Verifique su correo', 'success')
-        print('El correo se envio con exito')
-        return render_template('home.html')
+            )
+            db.session.add(user)
+            db.session.commit()
+
+            msg = Message('El registro del Usuario ha sido satisfactoriamente' ,
+                        sender = app.config['MAIL_PASSWORD'],
+                        recipients=[user.correo])
+            msg.html = render_template('email.html' , user = user.usuario )
+            mail.send(msg)
+            flash('Usuario registrado correctamente, Verifique su correo', 'success')
+            print('El correo se envio con exito')
+            return render_template('home.html')
 
     return render_template('signup.html')
 
@@ -441,28 +530,33 @@ def login():
             if hashed_password == stored_password:
                 session['user_authenticated'] = True
                 session['usuario'] = username  # Guarda el usuario en la sesión
+                session['role'] = user.role #Guarda el rol del usuario
                 print('Bienvenido ' + username)
                 return redirect(url_for('menu')) #Envia a menu.html
             else:
                 print('Usuario o contraseña incorrectos')
                 flash('Usuario o contraseña incorrectos', 'danger')
         else:
-            flash('Usuario o contraseña incorrectos', 'danger')
             print('Usuario o contraseña incorrectos')
 
     return render_template('login.html')
 
 @app.route("/menu")
+@login_required
+@csrf.exempt
 def menu():
     if 'user_authenticated' in session and session['user_authenticated']:
         username = session['usuario']
         return render_template('menu.html', username=username)
     else:
         return redirect(url_for('login'))
+    
+#Registrar un paciente
 
 @app.route("/register", methods=['GET', 'POST'])
 @csrf.exempt
 @login_required
+@role_required('admin')
 def register():
     user_authenticated = get_user_authenticated()
     if request.method == 'POST':
@@ -512,11 +606,22 @@ def register():
         vpsc_oi = request.form['vpsc_oi']
         vpsc_ao = request.form['vpsc_ao']
         vpsc_PH = request.form['vpsc_PH']
-        ducciones_od = request.form['ducciones_od']
-        ducciones_oi = request.form['ducciones_oi']
-        ppc_od = request.form['ppc_od']
-        ppc_oi = request.form['ppc_oi']
+        vlcc_od = request.form['vlcc_od']
+        vlcc_oi = request.form['vlcc_oi']
+        vlcc_ao = request.form['vlcc_ao']
+        vlcc_PH = request.form['vlcc_PH']
+        vpcc_od = request.form['vpcc_od']
+        vpcc_oi = request.form['vpcc_oi']
+        vpcc_ao = request.form['vpcc_ao']
+        vpcc_PH = request.form['vpcc_PH']
+        lensometria_od = request.form['lensometria_od']
+        lensometria_oi = request.form['lensometria_oi']
+        lensometria_add = request.form['lensometria_add']
+        lensometria_tipo_lente = request.form['lensometria_tipo_lente']
         examen_externo = request.form['examen_externo']
+        examen_ppc = request.form['ppc']
+        examen_ducciones = request.form['ducciones']
+        examen_cover_test = request.form['cover_test']
 
         # vista
 
@@ -615,12 +720,25 @@ def register():
             vpsc_od = vpsc_od,
             vpsc_oi = vpsc_oi,
             vpsc_ao = vpsc_ao ,
-            vpsc_PH = vpsc_PH ,      
-            ducciones_od=ducciones_od,
-            ducciones_oi=ducciones_oi,
-            ppc_od=ppc_od,
-            ppc_oi=ppc_oi,
-            examen_externo=examen_externo
+            vpsc_PH = vpsc_PH ,   
+            vlcc_od = vlcc_od,
+            vlcc_oi = vlcc_oi,
+            vlcc_ao = vlcc_ao,
+            vlcc_PH = vlcc_PH,
+            vpcc_od = vpcc_od,
+            vpcc_oi = vpcc_oi,
+            vpcc_ao = vpcc_ao ,
+            vpcc_PH = vpcc_PH ,      
+            lensometria_od=lensometria_od,
+            lensometria_oi=lensometria_oi,
+            lensometria_add=lensometria_add,
+            lensometria_tipo_lente=lensometria_tipo_lente,
+            examen_externo=examen_externo,
+            examen_ppc = examen_ppc,
+            examen_ducciones = examen_ducciones,
+            examen_cover_test = examen_cover_test
+
+
         )
         nueva_consulta.paciente = user
         db.session.add(nueva_consulta)
@@ -681,9 +799,11 @@ def register():
 
     return render_template('register.html', user_authenticated=user_authenticated)
 
+#Consultar pacienteS
 @app.route("/consult", methods=['GET', 'POST'])
 @csrf.exempt
 @login_required
+@role_required('admin', 'consulta')
 def consult():
     user_authenticated = get_user_authenticated()
     pacientes = None
@@ -706,10 +826,10 @@ def consult():
     
     return render_template('consult.html', pacientes=pacientes, antecedentes=antecedentes_dict, mov_consulta=mov_consulta_dic, vista=vista_dict, user_authenticated=user_authenticated)
 
-
 @app.route("/edit/<int:id>/update", methods=['GET', 'POST'])
 @csrf.exempt
 @login_required
+@role_required('admin')
 def edit(id):
     user_authenticated = get_user_authenticated()
     editar_paciente = paciente.query.filter_by(documento= paciente.documento).first()
@@ -764,13 +884,24 @@ def edit(id):
         editar_movconsulta.vlsc_PH = request.form['vlsc_PH']
         editar_movconsulta.vpsc_od = request.form['vpsc_od']
         editar_movconsulta.vpsc_oi = request.form['vpsc_oi']
-        editar_movconsulta.vpsc_ao = request.form['vpsc_PH']
-        editar_movconsulta.vpsc_PH = request.form['vision_lejana']
-        editar_movconsulta.ducciones_od = request.form['ducciones_od']
-        editar_movconsulta.ducciones_oi = request.form['ducciones_oi']
-        editar_movconsulta.ppc_od = request.form['ppc_od']
-        editar_movconsulta.ppc_oi = request.form['ppc_oi']
+        editar_movconsulta.vpsc_ao = request.form['vpsc_ao']
+        editar_movconsulta.vpsc_PH = request.form['vpsc_PH']
+        editar_movconsulta.vlcc_od = request.form['vlcc_od']
+        editar_movconsulta.vlcc_oi = request.form['vlcc_oi']
+        editar_movconsulta.vlcc_ao = request.form['vlcc_ao']
+        editar_movconsulta.vlcc_PH = request.form['vlcc_PH']
+        editar_movconsulta.vpcc_od = request.form['vpcc_od']
+        editar_movconsulta.vpcc_oi = request.form['vpcc_oi']
+        editar_movconsulta.vpcc_ao = request.form['vpcc_ao']
+        editar_movconsulta.vpcc_PH = request.form['vpcc_PH']
+        editar_movconsulta.lensometria_od = request.form['lensometria_od']
+        editar_movconsulta.lensometria_oi = request.form['lensometria_oi']
+        editar_movconsulta.lensometria_add = request.form['lensometria_add']
+        editar_movconsulta.lensometria_tipo_lente = request.form['lensometria_tipo_lente']
         editar_movconsulta.examen_externo = request.form['examen_externo']
+        editar_movconsulta.examen_ppc = request.form['ppc']
+        editar_movconsulta.examen_ducciones = request.form['ducciones']
+        editar_movconsulta.examen_cover_test = request.form['cover_test']
 
 
 
@@ -778,7 +909,7 @@ def edit(id):
 
         editar_vista.OFTALMOSCOPIA_ojo_derecho = request.form['OFTALMOSCOPIA_ojo_derecho']
         editar_vista.OFTALMOSCOPIA_ojo_izquierdo = request.form['OFTALMOSCOPIA_ojo_izquierdo']
-        editar_vista.ojo_drc_querato = request.form['ojo_drc_querato']
+        editar_vista.ojo_izq_querato = request.form['ojo_izq_querato']
         editar_vista.ojo_izq_querato = request.form['ojo_izq_querato']
         editar_vista.esfera_retino = request.form['esfera_retino']
         editar_vista.cilindro_retino = request.form['cilindro_retino']
@@ -794,7 +925,7 @@ def edit(id):
         editar_vista.vl20_retino_1 = request.form['vl20_retino_1']
         editar_vista.vp20_retino_1 = request.form['vp20_retino_1']
         editar_vista.add_retino_1 = request.form['add_retino_1']
-        editar_vista.esfera = request.form['esfera ']
+        editar_vista.esfera = request.form['esfera']
         editar_vista.cilindro = request.form['cilindro']
         editar_vista.eje = request.form['eje']
         editar_vista.dp = request.form['dp']
@@ -817,6 +948,7 @@ def edit(id):
         editar_vista.filtro = request.form['filtro']
         editar_vista.color = request.form['color']
         editar_vista.observacion = request.form['obs']
+
         db.session.commit()
         print('El usuario se ha editado correctamente')
         flash('El paciente se ha editado correctamente', 'success')
@@ -834,10 +966,10 @@ def logout():
     session.pop('usuario', None)
     return render_template('login.html', user_authenticated=user_authenticated)
 
-
 @app.route('/delete/<int:documento>')
 @csrf.exempt
 @login_required
+@role_required('admin')
 def eliminar_paciente(documento):
     user_authenticated = get_user_authenticated()
 
@@ -849,8 +981,7 @@ def eliminar_paciente(documento):
         antecedentes.query.filter_by(paciente_documento=paciente_a_eliminar.documento).delete()
         MovConsulta.query.filter_by(paciente_documento=paciente_a_eliminar.documento).delete()
         Vista.query.filter_by(paciente_documento=paciente_a_eliminar.documento).delete()
-
-        
+     
         db.session.delete(paciente_a_eliminar)
         db.session.commit()
         flash('El paciente ha sido eliminado correctamente', 'success')
@@ -859,29 +990,27 @@ def eliminar_paciente(documento):
         print('No se encontró al paciente')
         flash('No se encontró al paciente', 'danger')
 
-
-    
     return render_template('consult.html', user_authenticated=user_authenticated)
     
     
   #Inventory:
   
-  
+
 class Inventory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     fecha = db.Column(db.DateTime)
     sede = db.Column(db.String(40))
     montura = db.Column(db.String(40))
-    cantidad_montura = db.Column(db.BigInteger)
+    cantidad_montura = db.Column(db.Integer)
     marca = db.Column(db.String(40))
     referencia = db.Column(db.String(20))
     color = db.Column(db.String(20))
     cordones = db.Column(db.String(30))
-    cantidad_cordones = db.Column(db.BigInteger)
+    cantidad_cordones = db.Column(db.Integer)
     estuches = db.Column(db.String(30))
-    cantidad_estuches = db.Column(db.BigInteger)
+    cantidad_estuches = db.Column(db.Integer)
     stopper = db.Column(db.String(50))
-    cantidad_stopper = db.Column(db.BigInteger)
+    cantidad_stopper = db.Column(db.Integer)
 
     def __init__(self, fecha, sede, montura, cantidad_montura, marca, referencia, color, cordones, cantidad_cordones, estuches, cantidad_estuches, stopper, cantidad_stopper):
         self.fecha = fecha
@@ -911,16 +1040,16 @@ class recibo(db.Model):
     documento = db.Column(db.Integer)
     nombre_paciente = db.Column(db.String(200))
     direccion = db.Column(db.String(200))
-    telefono = db.Column(db.BigInteger)
+    telefono = db.Column(db.Integer)
     correo = db.Column(db.String(200))
-    cantidad = db.Column(db.BigInteger)
-    cantidad_1 = db.Column(db.BigInteger)
-    cantidad_2 = db.Column(db.BigInteger)
-    cantidad_3 = db.Column(db.BigInteger)
-    cantidad_4 = db.Column(db.BigInteger)
-    cantidad_5 = db.Column(db.BigInteger)
-    cantidad_6 = db.Column(db.BigInteger)
-    cantidad_7 = db.Column(db.BigInteger)
+    cantidad = db.Column(db.Integer)
+    cantidad_1 = db.Column(db.Integer)
+    cantidad_2 = db.Column(db.Integer)
+    cantidad_3 = db.Column(db.Integer)
+    cantidad_4 = db.Column(db.Integer)
+    cantidad_5 = db.Column(db.Integer)
+    cantidad_6 = db.Column(db.Integer)
+    cantidad_7 = db.Column(db.Integer)
     detalle = db.Column(db.String(200))
     detalle_1 = db.Column(db.String(200))
     detalle_2 = db.Column(db.String(200))
@@ -999,6 +1128,7 @@ class recibo(db.Model):
 @app.route("/inventory", methods=['GET', 'POST'])
 @login_required
 @csrf.exempt
+@role_required('admin')
 def inventario():
     if request.method == 'POST':
         fecha = request.form['day']
@@ -1042,6 +1172,7 @@ def inventario():
 
 @app.route('/export')
 @login_required
+@role_required('admin')
 @csrf.exempt
 def export():
     data = Inventory.query.all()
@@ -1049,18 +1180,14 @@ def export():
                         item.cantidad_cordones, item.estuches, item.cantidad_estuches, item.stopper, item.cantidad_stopper
                         ] for item in data],
                       columns=['ID', 'Fecha', 'Sede', 'Montura', 'Cantidad Montura', 'Marca', 'Referencia', 'Color', 'Cordones', 'Cantidad Cordones', 'Estuches', 'Cantidad Estuches', 'Stopper', 'Cantidad Stopper'])
-
-    # Guardar CSV y se indica la carpeta donde se va a guardar la información
-    output_dir = os.path.join(os.getcwd(), 'Informes')
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-
-    csv_path = os.path.join(output_dir, 'inventory.csv')
-    df.to_csv(csv_path, index=False)
+    
+    #Generar archivo csv
+    csv_path = os.path.join ('inventory.csv')
+    df.to_csv(csv_path, index=False, sep=';' )
 
     # Generar perfil de datos
     profile = ProfileReport(df, title='Perfil de Datos')
-    profile_html_path = os.path.join(output_dir, 'reporte.html')
+    profile_html_path = os.path.join('reporte.html')
     profile.to_file(profile_html_path)
 
     print('Se Genero Informe de Manera Correcta')
@@ -1071,15 +1198,28 @@ def export():
 
 @app.route('/download/<filename>')
 def download_file(filename):
-    output_dir = os.path.join(os.getcwd(), 'Informes')
-    return send_from_directory(output_dir, filename)
+    csv_path = os.path.join(os.getcwd(), 'Informes')
+    return send_from_directory(csv_path, filename)
+
+
+
+#Busqueda de Inventario
+
+@app.route('/consultinventory')
+@csrf.exempt
+@login_required
+@role_required('admin', 'consulta')
+def consultinventory():
+    inventory = Inventory.query.all()  # Obtener todos los registros de la tabla Inventory
+    return render_template('consultinventory.html', inventory=inventory)
 
 
 # Busqueda por # recibo
 
 @app.route('/search', methods=['GET', 'POST'])
-@login_required
 @csrf.exempt
+@login_required
+@role_required('admin', 'consulta')
 def search():
     if request.method == 'POST':
         numero_recibo = request.form['recibo']
@@ -1167,8 +1307,9 @@ def generar_xml_compra(compra):
 
 
 @app.route('/recibo', methods=['GET', 'POST'])
-@login_required
 @csrf.exempt
+@login_required
+@role_required('admin', 'consulta')
 def compra():
     if request.method == 'POST':
         fecha_compra = request.form['day']
@@ -1211,6 +1352,10 @@ def compra():
         valor_total_6 = request.form['v_total_6']
         valor_total_7 = request.form['v_total_7']
         total = request.form['total']
+
+
+
+        
 
         compra = recibo(
             fecha_compra=fecha_compra,
@@ -1287,6 +1432,7 @@ def compra():
         print('Recibo no enviado')
         flash('Recibo no enviado', 'danger')
         return render_template('recibo.html')
+
 
 
 

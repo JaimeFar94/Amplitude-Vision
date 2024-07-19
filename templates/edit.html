@@ -1,35 +1,34 @@
 <!DOCTYPE html>
 {% extends "layouth.html" %}
 {%block content%}
+
 <html>
 
 <head>
-    <title>REGISTER</title>
+    <title>EDIT</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
     <h1> Información Personal</h1>
-    <form id="multipaso-form" method="post" action="/edit/{{ paciente.documento }}/update" enctype="multipart/form-data">
+    <form id="multipaso-form" method="post" action="/edit/{{ paciente.id }}/update" enctype="multipart/form-data">
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="document">Documento:</label>
-                    <input type="text" name="document" id="document" class="form-control"
-                        value="{{ paciente.documento }}">
+                    <input type="text" name="document" id="document" class="form-control" value="{{ paciente.documento }}">
                 </div>
                 <div class="form-group">
                     <label for="tdocument">Tipo de Documento:</label>
                     <select name="tdocument" id="tdocument" class="form-control">
                         <option value="cedula" {% if paciente[0]=="cedula" %} selected {% endif %}>C.C</option>
-                        <option value="tarjeta_identidad" {% if paciente[0]=="tarjeta_identidad" %} selected {% endif
-                            %}> T.I
+                        <option value="tarjeta_identidad" {% if paciente[0]=="tarjeta_identidad" %} selected {% endif %}>T.I
                         </option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="name">Nombre:</label>
-                    <input type="text" name="name" id="name" class="form-control"
-                        value="{{ paciente.nombre_paciente }}">
+                    <input type="text" name="name" id="name" class="form-control" value="{{ paciente.nombre_paciente }}">
                 </div>
                 <div class="form-group">
                     <label for="yearold">Edad:</label>
@@ -40,8 +39,7 @@
                     <select name="gender" id="gender" class="form-control">
                         <option value="Masculino" {% if paciente.genero=="Masculino" %} selected {% endif %}>Masculino
                         </option>
-                        <option value="Femenino" {% if paciente.genero=="Femenino" %} selected {% endif %}>Femenino
-                        </option>
+                        <option value="Femenino" {% if paciente.genero=="Femenino" %} selected {% endif %}>Femenino</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -58,6 +56,9 @@
                     <label for="phone">Teléfono:</label>
                     <input type="text" name="phone" id="phone" class="form-control" value="{{ paciente.telefono }}">
                 </div>
+            </div>
+           
+            <div class="col-md-6">
                 <legend>Información Adicional</legend>
                 <div class="form-group">
                     <label for="eps">EPS:</label>
@@ -84,448 +85,445 @@
                 </div>
             </div>
         </div>
-
         <div class="form-step" data-step="2">
-            <div class="col-md-6">
-                <table class="table">
-                    <h6>Antecedentes Familirares</h6>
-                    <thead>
-                        <tr>
-                            <th scope="col">Antecedentes En:</th>
-                            <th>Observación</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-
-                        <tr>
-                            <th>DIABETES</th>
-
-                            <td>
-                                <select name="dia" id="dia">
-                                    <option value="no_refiere" {% if antecedentes.diabetess=="no_refiere" %} selected {%
-                                        endif %}>NO REFIERE
-                                    </option>
-                                    <option value="refiere" {% if antecedentes.diabetes=="refiere" %} selected {% endif
-                                        %}>
-                                        REFIERE </option>
-                                </select>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <th>HIPERTENSIÓN</th>
-
-                            <td>
-                                <select name="hiper" id="hiper">
-                                    <option value="no_refiere" {% if antecedentes.hipertension=="no_refiere" %} selected
-                                        {% endif %}>NO
-                                        REFIERE
-                                    </option>
-                                    <option value="refiere" {% if antecedentes.hipertension=="refiere" %} selected {%
-                                        endif %}>
-                                        REFIERE
-                                    </option>
-                                </select>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <th>ARTRITIS</th>
-                            <td>
-                                <select name="artr" id="artr">
-                                    <option value="no_refiere" {% if antecedentes.artritis=="no_refiere" %} selected {%
-                                        endif %}>NO REFIERE
-                                    </option>
-                                    <option value="refiere" {% if antecedentes.artritis=="refiere" %} selected {% endif
-                                        %}>
-                                        REFIERE </option>
-                                </select>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <th>ALERGIA</th>
-                            <td>
-                                <select name="aler" id="aler">
-                                    <option value="no_refiere" {% if antecedentes.alergia=="no_refiere" %} selected {%
-                                        endif %}>
-                                        NO REFIERE
-                                    </option>
-                                    <option value="refiere" {% if antecedentes.alergia=="refiere" %} selected {% endif
-                                        %}>
-                                        REFIERE </option>
-                                </select>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <th>CATARATA</th>
-                            <td>
-                                <select name="cata" id="cata">
-                                    <option value="no_refiere" {% if antecedentes.catarata=="no_refiere" %} selected {%
-                                        endif %}>NO REFIERE
-                                    </option>
-                                    <option value="refiere" {% if antecedentes.catarata=="refiere" %} selected {% endif
-                                        %}>
-                                        REFIERE </option>
-                                </select>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <th>GLAUCOMA</th>
-                            <td>
-                                <select name="glau" id="glau">
-                                    <option value="no_refiere" {% if antecedentes.glaucoma=="no_refiere" %} selected {%
-                                        endif %}>NO REFIERE
-                                    </option>
-                                    <option value="refiere" {% if antecedentes.glaucoma=="refiere" %} selected {% endif
-                                        %}>
-                                        REFIERE </option>
-                                </select>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <th>ESTRABISMO</th>
-                            <td>
-                                <select name="estra" id="estra">
-                                    <option value="no_refiere" {% if antecedentes.estrabismo=="no_refiere" %} selected
-                                        {% endif %}>NO
-                                        REFIERE
-                                    </option>
-                                    <option value="refiere" {% if antecedentes.estrabismo=="refiere" %} selected {%
-                                        endif %}>
-                                        REFIERE
-                                    </option>
-                                </select>
-                            </td>
-
-                        </tr>
-
-                        <tr>
-                            <th>QUERATOCONO</th>
-                            <td>
-                                <select name="quera" id="quera">
-                                    <option value="no_refiere" {% if antecedentes.queratocono=="no_refiere" %} selected
-                                        {% endif %}>NO
-                                        REFIERE</option>
-                                    <option value="refiere" {% if antecedentes.queratocono=="refiere" %} selected {%
-                                        endif %}>
-                                        REFIERE
-                                    </option>
-                                </select>
-                            </td>
-
-                        </tr>
-                        <tr>
-                            <th><label for="otros">OTROS</label></th>
-                            <td><input type="text" name="otros" id="otros" value="{{ antecedentes.otros }} "
-                                    class="form-control"></td>
-                        </tr>
-                    </tbody>
-
-                </table>
-
-                <table class="default">
-                    <thead>
-                        <h6>Antecedentes Personales</h6>
-                    </thead>
+            <table class="table">
+                <h6>Antecedentes Familirares</h6>
+                <thead>
                     <tr>
-                        <th scope="col">Antecedentes En</th>
+                        <th scope="col">Antecedentes En:</th>
                         <th>Observación</th>
                     </tr>
+                </thead>
+                <tbody>
+                    <tr>
+
+                        <th>DIABETES</th>
+
+                        <td>
+                            <select name="dia" id="dia">
+                                <option value="no_refiere" {% if antecedentes.diabetess=="no_refiere" %} selected {% endif %}>NO REFIERE</option>
+                                <option value="refiere" value="refiere" {% if antecedentes.diabetes=="refiere" %} selected {% endif %}>REFIERE</option>
+                            </select>
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>HIPERTENSIÓN</th>
+
+                        <td>
+                            <select name="hiper" id="hiper">
+                                <option value="no_refiere"  {% if antecedentes.hipertension=="no_refiere" %} selected {% endif %}>NO REFIERE</option>
+                                <option value="refiere"  {% if antecedentes.hipertension=="refiere" %} selected {% endif %}>REFIERE</option>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+
+                        <th>ARTRITIS</th>
+
+                        <td>
+                            <select name="artr" id="artr">
+                                <option value="no_refiere"  {% if antecedentes.artritis=="no_refiere" %} selected {% endif %}>NO REFIERE</option>
+                                <option value="refiere" {% if antecedentes.artritis=="refiere" %} selected {% endif %}>REFIERE</option>
+                            </select>
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>ALERGIA</th>
+
+                        <td>
+                            <select name="aler" id="aler">
+                                <option value="no_refiere" {% if antecedentes.alergia=="no_refiere" %} selected {% endif %}>NO REFIERE</option>
+                                <option value="refiere" {% if antecedentes.alergia=="refiere" %} selected {% endif %}>REFIERE</option>
+                            </select>
+                        </td>
+
+                    </tr>
+                    <tr>
+
+                        <th>CATARATA</th>
+
+                        <td>
+                            <select name="cata" id="cata">
+                                <option value="no_refiere" {% if antecedentes.catarata=="no_refiere" %} selected {% endif %}>NO REFIERE</option>
+                                <option value="refiere" {% if antecedentes.catarata=="refiere" %} selected {% endif  %}>REFIERE</option>
+                            </select>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <th>GLAUCOMA</th>
+                        <td>
+                            <select name="glau" id="glau">
+                                <option value="no_refiere" {% if antecedentes.glaucoma=="no_refiere" %} selected {% endif %} >NO REFIERE</option>
+                                <option value="refiere" {% if antecedentes.glaucoma=="refiere" %} selected {% endif %}>REFIERE</option>
+                            </select>
+                        </td>
+
+                    </tr>
+                    <tr>
+
+                        <th>ESTRABISMO</th>
+                        <td>
+                            <select name="estra" id="estra">
+                                <option value="no_refiere" {% if antecedentes.estrabismo=="no_refiere" %} selected {% endif %}>NO REFIERE</option>
+                                <option value="refiere" {% if antecedentes.estrabismo=="refiere" %} selected {% endif %}>REFIERE</option>
+                            </select>
+                        </td>
+
+                    </tr>
+                    <tr>
+
+                        <th>QUERATOCONO</th>
+                        <td>
+                            <select name="quera" id="quera">
+                                <option value="no_refiere" {% if antecedentes.queratocono=="no_refiere" %} selected {% endif %}>NO REFIERE</option>
+                                <option value="refiere" {% if antecedentes.queratocono=="refiere" %} selected {% endif %}>REFIERE</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+
+                        <th><label for="otros">OTROS</label></th>
+                        <td><input type="text" name="otros" id="otros" class="form-control" value="{{ antecedentes.otros }}"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="default">
+                <thead>
+                    <h6>Antecedentes Personales</h6>
+                </thead>
+
+                <tr>
+
+                    <th scope="col">Antecedentes En</th>
+                    <th>Observación</th>
+
+                </tr>
+
+                <tr>
                     <th><label for="diabetes">DIABETES</label></th>
-                    <td><input type="text" name="diabetes" id="diabetes" value="{{ antecedentes.diabetes }}"
-                            class="form-control"></td>
-                    <tr>
-                        <th><label for="hipertension">Hipertensión</label></th>
-                        <td> <input type="text" name="hipertension" id="hipertension"
-                                value="{{ antecedentes.hipertension_per }}" class="form-control"> </td>
-                    </tr>
-                    <tr>
-                        <th><label for="artritis">Artritis</label></th>
-                        <td><input type="text" name="artritis" id="artritis" value="{{ antecedentes.Artritis_per }}"
-                                class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <th><label for="alergia">Alergia</label></th>
-                        <td><input type="text" name="alergia" id="alergia" value="{{ antecedentes.Alergia_per }}"
-                                class="form-control"> </td>
-                    </tr>
-                    <tr>
-                        <th><label for="ulcera">Úlcera Gástrica</label></th>
-                        <td><input type="text" name="ulcera" id="ulcera" value="{{ antecedentes.ulcera_per }}"
-                                class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <th><label for="cirugia">Cirugía Refractiva</label></th>
-                        <td><input type="text" name="cirugia" id="cirugia" value="{{ antecedentes.cirugia_per }}"
-                                class="form-control"> </td>
-                    </tr>
-                    <tr>
-                        <th><label for="lentes">Lentes de Contacto</label> </th>
-                        <td><input type="text" name="lentes" id="lentes" value="{{ antecedentes.lentes_contacto_per }}"
-                                class="form-control"> </td>
-                    </tr>
-                    <tr>
-                        <th><label for="otros_1">OTROS</label></th>
-                        <td><input type="text" name="otros_1" id="otros_1" value="{{ antecedentes.otros1 }}"
-                                class="form-control"></td>
-                    </tr>
-                </table>
 
-                <table class="default">
+                    <td><input type="text" name="diabetes" id="diabetes" class="form-control" value="{{ antecedentes.diabetes }}"></td>
+                </tr>
+                <tr>
+                    <th><label for="hipertension">HIPERTENSIÓN</label></th>
 
-                    <thead>
-                        <h6>Antecedentes Quirúrgicos<h6>
-                    </thead>
-                    <tr>
-                        <th><label for="descripcion">Describalo</label></th>
+                    <td><input type="text" name="hipertension" id="hipertension" class="form-control" value="{{ antecedentes.hipertension_per }}"></td>
+                </tr>
+                <tr>
+                    <th><label for="artritis">ARTRITIS</label></th>
 
-                        <td><input type="text" name="descripcion" id="descripcion"
-                                value="{{ antecedentes.descripcion }}" class="form-control"></td>
-                    </tr>
+                    <td><input type="text" name="artritis" id="artritis" class="form-control" value="{{ antecedentes.Artritis_per }}"></td>
+                </tr>
+                <tr>
+                    <th><label for="alergia">ALERGIA</label></th>
 
-                </table>
-            </div>
+                    <td><input type="text" name="alergia" id="alergia" class="form-control" value="{{ antecedentes.Alergia_per }}"></td>
+                </tr>
+                <tr>
+                    <th><label for="ulcera">ÚLCERA GÁSTRICA</label></th>
+
+                    <td><input type="text" name="ulcera" id="ulcera" class="form-control" value="{{ antecedentes.ulcera_per }}"></td>
+                </tr>
+                <tr>
+                    <th><label for="cirugia">CIRUGÍA REFRACTIVA</label></th>
+
+                    <td><input type="text" name="cirugia" id="cirugia" class="form-control" value="{{ antecedentes.cirugia_per }}"></td>
+                </tr>
+                <tr>
+                    <th><label for="lentes">LENTES DE CONTACTO</label></th>
+
+                    <td><input type="text" name="lentes" id="lentes" class="form-control" value="{{ antecedentes.lentes_contacto_per }}"></td>
+                </tr>
+                <tr>
+                    <th><label for="otros_1">OTROS</label></th>
+                    <td><input type="text" name="otros_1" id="otros_1" class="form-control" value="{{ antecedentes.otros1 }}"></td>
+                </tr>
+
+
+            </table>
+
+            <table class="default">
+
+                <thead>
+                    <h6>Antecedentes Quirúrgicos<h6>
+                </thead>
+                <tr>
+                    <th><label for="descripcion">Describalo</label></th>
+
+                    <td><input type="text" name="descripcion" id="descripcion" class="form-control" value="{{ antecedentes.descripcion }}"></td>
+                </tr>
+
+            </table>
+
         </div>
+
         <div class="form-step" data-step="3">
             <table class="table">
                 <thead>
                     <h6>Consulta<h6>
                 </thead>
                 <th><label for="mov_consulta">Motivo de Consulta</label></th>
-                <td><input type="text" name="mov_consulta" id="mov_consulta" class="form-control"
-                        value="{{mov_consulta.mov_consulta}}" placeholder="Motivo de Consulta"> </td>
+                <td><input type="text" name="mov_consulta" id="mov_consulta" class="form-control"  value="{{ mov_consulta.mov_consulta }}" placeholder="Motivo de Consulta"></td>
                 <th><label for="ulti_consulta">Ultima Consulta</label></th>
-                <td><input type="text" name="ulti_consulta" id="ulti_consulta" class="form-control"
-                        value="{{mov_consulta.ulti_consulta}}" placeholder="Ultima Consulta"> </td>
+                <td><input type="text" name="ulti_consulta" id="ulti_consulta" class="form-control" value="{{mov_consulta.ulti_consulta}}" placeholder="Ultima Consulta"></td>
+            </table>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th colspan="5">
+                        <h6>Agudeza Visual</h6>
+                    </th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>OD</th>
+                    <th>OI</th>
+                    <th>AO</th>
+                    <th>PH</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><label for="vlsc_od">VLSC</label></td>
+                    <td><input type="text" name="vlsc_od" id="vlsc_od" class="form-control" placeholder="OD" value="{{mov_consulta.vlsc_od}}" ></td>
+                    <td><input type="text" name="vlsc_oi" id="vlsc_oi" class="form-control" placeholder="OI" value="{{mov_consulta.vlsc_oi}}"></td>
+                    <td><input type="text" name="vlsc_ao" id="vlsc_ao" class="form-control" placeholder="AO" value="{{mov_consulta.vlsc_ao}}"></td>
+                    <td><input type="text" name="vlsc_PH" id="vlsc_PH" class="form-control" placeholder="PH" value="{{mov_consulta.vlsc_PH}}"></td>
+                </tr>
+                <tr>
+                    <td><label for="vpsc_od">VPSC</label></td>
+                    <td><input type="text" name="vpsc_od" id="vpsc_od" class="form-control" placeholder="OD" value="{{mov_consulta.vpsc_od}}"></td>
+                    <td><input type="text" name="vpsc_oi" id="vpsc_oi" class="form-control" placeholder="OI" value="{{mov_consulta.vpsc_od}}"></td>
+                    <td><input type="text" name="vpsc_ao" id="vpsc_ao" class="form-control" placeholder="AO" value="{{mov_consulta.vpsc_od}}"></td>
+                    <td><input type="text" name="vpsc_PH" id="vpsc_PH" class="form-control" placeholder="PH" value="{{mov_consulta.vpsc_od}}"></td>
+                </tr>
+                <tr>
+                    <td><label for="vpsc_od">VLCC</label></td>
+                    <td><input type="text" name="vlcc_od" id="vlcc_od" class="form-control" placeholder="OD" value="{{mov_consulta.vlcc_od}}"></td>
+                    <td><input type="text" name="vlcc_oi" id="vlcc_oi" class="form-control" placeholder="OI" value="{{mov_consulta.vlcc_od}}"></td>
+                    <td><input type="text" name="vlcc_ao" id="vlcc_ao" class="form-control" placeholder="AO" value="{{mov_consulta.vlcc_od}}"></td>
+                    <td><input type="text" name="vlcc_PH" id="vlcc_PH" class="form-control" placeholder="PH" value="{{mov_consulta.vlcc_od}}"></td>
+                </tr>
+                <tr>
+                    <td><label for="vpsc_od">VPCC</label></td>
+                    <td><input type="text" name="vpcc_od" id="vpcc_od" class="form-control" placeholder="OD"  value="{{mov_consulta.vpcc_od}}"></td>
+                    <td><input type="text" name="vpcc_oi" id="vpcc_oi" class="form-control" placeholder="OI"  value="{{mov_consulta.vpcc_od}}"></td>
+                    <td><input type="text" name="vpcc_ao" id="vpcc_ao" class="form-control" placeholder="AO"  value="{{mov_consulta.vpcc_od}}"></td>
+                    <td><input type="text" name="vpcc_PH" id="vpcc_PH" class="form-control" placeholder="PH"  value="{{mov_consulta.vpcc_od}}"></td>
+                </tr>
+                <th colspan="5">
+                    <h6>Lensometria</h6>
+                </th>
+                <tr>
+                    <td><label for="lensometria_od"> OD</label></td>
+                    <td colspan="4"><input type="text" name="lensometria_od" id="lensometria_od" class="form-control" value="{{mov_consulta.lensometria_od}}"></td>
+                </tr>
+                <tr>
+                    <td><label for="lensometria_oi"> OI</label></td>
+                    <td colspan="4"><input type="text" name="lensometria_oi" id="lensometria_oi" class="form-control" value="{{mov_consulta.lensometria_oi}}"></td>
+                </tr>
+                <tr>
+                    <td><label for="lensometria_add">ADD</label></td>
+                    <td colspan="4"><input type="text" name="lensometria_add" id="lensometria_add" class="form-control" value="{{mov_consulta.lensometria_add}}"></td>
+                </tr>
+                <tr>
+                    <td><label for="lensometria_tipo_lente">Tipo de Lente</label></td>
+                    <td colspan="4"><input type="text" name="lensometria_tipo_lente" id="lensometria_tipo_lente" class="form-control" value="{{mov_consulta.lensometria_tipo_lente}}"></td>
+                </tr>
+                <tr>
+                    <td><label for="examen_externo">EXAMEN EXTERNO</label></td>
+                    <td colspan="4"><textarea id="examen_externo" name="examen_externo" rows="4" class="form-control"  placeholder="Ingrese la Información..." >{{ mov_consulta.examen_externo }}</textarea></td>
+                </tr>
+                <th colspan="5">
+                    <h6>Examen Motor</h6>
+                </th>
+                <tr>
+                    <td><label for="ppc">PPC</label></td>
+                    <td colspan="4"><input type="text" name="ppc" id="ppc" class="form-control" value="{{mov_consulta.examen_ppc}}"></td>
+                </tr>
+                <tr>
+                    <td><label for="ducciones">Ducciones</label></td>
+                    <td colspan="4"><input type="text" name="ducciones" id="ducciones" class="form-control" value="{{mov_consulta.examen_ducciones}}"></td>
+                </tr>
+                <tr>
+                    <td><label for="cover_test">Cover Test</label></td>
+                    <td colspan="4"><input type="text" name="cover_test" id="cover_test" class="form-control" value="{{mov_consulta.examen_cover_test}}"></td>
+                </tr>
+
+            </tbody>
+        </table>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th colspan="10">
+                        <h6>OFTALMOSCOPIA</h6>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="3" ><label for="OFTALMOSCOPIA_ojo_derecho">OJO DERECHO</label></td>
+                    <td colspan="3" ><input type="text" name="OFTALMOSCOPIA_ojo_derecho" id="OFTALMOSCOPIA_ojo_derecho" class="form-control" value="{{vista.OFTALMOSCOPIA_ojo_derecho}}"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" ><label for="OFTALMOSCOPIA_ojo_izquierdo">OJO IZQUIERDO</label></td>
+                    <td colspan="3"><input type="text" name="OFTALMOSCOPIA_ojo_izquierdo" id="OFTALMOSCOPIA_ojo_izquierdo" class="form-control" value="{{vista.OFTALMOSCOPIA_ojo_izquierdo}}"></td>
+                </tr>
+            </tbody>
+            <thead>
+                <tr>
+                    <th colspan="10">
+                        <h6>QUERATOMETRIA</h6>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="3" ><label for="ojo_drc_querato">OJO DERECHO</label></td>
+                    <td colspan="3" ><input type="text" name="ojo_drc_querato" id="ojo_drc_querato" class="form-control" value="{{vista.ojo_drc_querato}}"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" ><label for="ojo_izq_querat">OJO IZQUIERDO</label></td>
+                    <td colspan="3"><input type="text" name="ojo_izq_querato" id="ojo_izq_querato" class="form-control" value="{{vista.ojo_izq_querato}}"></td>
+                </tr>
+            </tbody>
+            <thead>
+                <tr>
+                    <th colspan="8">
+                        <h6>RETINOSCOPIA</h6>
+                    </th>
+                </tr>
+                <tr>
+                    <th>OJO DERECHO</th>
+                    <th>Esfera</th>
+                    <th>Cilindro</th>
+                    <th>Eje</th>
+                    <th>DP</th>
+                    <th>VL 20</th>
+                    <th>VP 20</th>
+                    <th>ADD</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><label for="esfera_retino">OJO DERECHO</label></td>
+                    <td><input type="text" name="esfera_retino" id="esfera_retino" class="form-control" placeholder="Esfera" value="{{vista.esfera_retino}}" ></td>
+                    <td><input type="text" name="cilindro_retino" id="cilindro_retino" class="form-control" placeholder="Cilindro" value="{{vista.cilindro_retino}}"></td>
+                    <td><input type="text" name="eje_retino" id="eje_retino" class="form-control" placeholder="Eje" value="{{vista.eje_retino}}"></td>
+                    <td><input type="text" name="dp_retino" id="dp_retino" class="form-control" placeholder="D.P" value="{{vista.dp_retino }}"></td>
+                    <td><input type="text" name="vl20_retino" id="vl20_retino" class="form-control" placeholder="AV VL20/" value="{{vista.vl20_retino }}"></td>
+                    <td><input type="text" name="vp20_retino" id="vp20_retino" class="form-control" placeholder="AV VP20/" value="{{vista.vp20_retino  }}"></td>
+                    <td><input type="text" name="add_retino" id="add_retino" class="form-control" placeholder="ADD" value="{{vista.add_retino }}"></td>
+                </tr>
+                <tr>
+                    <td><label for="esfera_retino_1">OJO IZQUIERDO</label></td>
+                    <td><input type="text" name="esfera_retino_1" id="esfera_retino_1" class="form-control" placeholder="Esfera" value="{{vista.esfera_retino_1}}"></td>
+                    <td><input type="text" name="cilindro_retino_1" id="cilindro_retino_1" class="form-control" placeholder="Cilindro" value="{{vista.cilindro_retino_1}}"></td>
+                    <td><input type="text" name="eje_retino_1" id="eje_retino_1" class="form-control" placeholder="Eje" value="{{vista.eje_retino_1}}"></td>
+                    <td><input type="text" name="dp_retino_1" id="dp_retino_1" class="form-control" placeholder="D.P" value="{{vista.dp_retino_1 }}"></td>
+                    <td><input type="text" name="vl20_retino_1" id="vl20_retino_1" class="form-control" placeholder="AV VL20/" value="{{vista.vl20_retino_1 }}"></td>
+                    <td><input type="text" name="vp20_retino_1" id="vp20_retino_1" class="form-control" placeholder="AV VP20/" value="{{vista.vp20_retino_1  }}"></td>
+                    <td><input type="text" name="add_retino_1" id="add_retino_1" class="form-control" placeholder="ADD" value="{{vista.add_retino_1 }}"></td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th colspan="13">
+                        <h6>RX FINAL (Formulación)</h6>
+                    </th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>Esfera</th>
+                    <th>Cilindro</th>
+                    <th>Eje</th>
+                    <th>DP</th>
+                    <th>VL20</th>
+                    <th>VP20</th>
+                    <th>ADD</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><label for="esfera">OJO DERECHO</label></td>
+                    <td><input type="text" name="esfera" id="esfera" class="form-control" placeholder="Esfera" value="{{vista.esfera }}"></td>
+                    <td><input type="text" name="cilindro" id="cilindro" class="form-control" placeholder="Cilindro" value="{{vista.cilindro }}"></td>
+                    <td><input type="text" name="eje" id="eje" class="form-control" placeholder="Eje" value="{{vista.eje }}"></td>
+                    <td><input type="text" name="dp" id="dp" class="form-control" placeholder="D.P" value="{{vista.dp }}"></td>
+                    <td><input type="text" name="vl20" id="vl20" class="form-control" placeholder="AV VL20/" value="{{vista.vl20 }}"></td>
+                    <td><input type="text" name="vp20" id="vp20" class="form-control" placeholder="AV VP20/" value="{{vista.vp20 }}"></td>
+                    <td><input type="text" name="add_0" id="add_0" class="form-control" placeholder="ADD" value="{{vista.add_0 }}"></td>
+                </tr>
+                <tr>
+                    <td><label for="ojo_izq">OJO IZQUIERDO</label></td>
+                    <td><input type="text" name="esfera_1" id="esfera_1" class="form-control" placeholder="Esfera" value="{{vista.esfera_1 }}"></td>
+                    <td><input type="text" name="cilindro_1" id="cilindro_1" class="form-control" placeholder="Cilindro"  value="{{vista.cilindro_1 }}"></td>
+                    <td><input type="text" name="eje_1" id="eje_1" class="form-control" placeholder="Eje"  value="{{vista.eje_1 }}"></td>
+                    <td><input type="text" name="dp_1" id="dp_1" class="form-control" placeholder="D.P"  value="{{vista.dp_1 }}"></td>
+                    <td><input type="text" name="vl20_1" id="vl20_1" class="form-control" placeholder="AV VL20/"  value="{{vista.vl20_1 }}"></td>
+                    <td><input type="text" name="vp20_1" id="vp20_1" class="form-control" placeholder="AV VP20/"  value="{{vista.vp20_1 }}"></td>
+                    <td><input type="text" name="add_1" id="add_1" class="form-control" placeholder="ADD"  value="{{vista.add_1 }}"></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><label for="recomendación">Recomendación</label></td>
+                    <td colspan="6"><textarea id="recomendación" name="recomendación" rows="2" class="form-control" placeholder="Ingrese la Información...">{{ vista.recomendación }}</textarea></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><label for="diagnostico">Diagnóstico</label></td>
+                    <td colspan="6"><textarea id="diagnostico" name="diagnostico" rows="2" class="form-control" placeholder="Ingrese la Información..." >{{ vista.diagnostico }}</textarea></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><label for="observación">Observación</label></td>
+                    <td colspan="6"><textarea id="observación" name="observación" rows="2" class="form-control" placeholder="Ingrese la Información..." >{{ vista.observación }}</textarea></td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table">
+            <table class="table">
+                <h6>Formula Número</h6>
+
+                <th><label for="tipo_lente">Tipo de Lente</label></th>
+                <td><input type="text" name="tipo_lente" id="tipo_lente" class="form-control" placeholder="Tipo de Lente" value="{{vista.tipo_lente}}"></td>
+                <th><label for="montura">Montura</label></th>
+                <td><input type="text" name="montura" id="montura" class="form-control" placeholder="Montura" value="{{vista.montura}}">
+                </td>
+                <tr>
+                    <th><label for="material">Material</label></th>
+                    <td><input type="text" name="material" id="material" class="form-control" placeholder="Material" value="{{vista.material}}"></td>
+                    <th><label for="filtro">Filtro</label></th>
+                    <td><input type="text" name="filtro" id="filtro" class="form-control" placeholder="Filtro" value="{{vista.filtro}}">
+                    </td>
+                    <th><label for="color">Color</label></th>
+                    <td><input type="text" name="color" id="color" class="form-control" placeholder="Color" value="{{vista.color}}">
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="obs">Observación</label></th>
+                    <td><input type="text" name="obs" id="obs" class="form-control" placeholder="Observación" value="{{vista.observacion}}">
+                    </td>
+                </tr>
             </table>
 
-
-            
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th colspan="5">
-                            <h6>Agudeza Visual</h6>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <th>OD</th>
-                        <th>OI</th>
-                        <th>AO</th>
-                        <th>PH</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><label for="vlsc_od">VLSC</label></td>
-                        <td><input type="text" name="vlsc_od" id="vlsc_od" class="form-control" placeholder="OD" value="{{mov_consulta.vlsc_od}}"></td>
-                        <td><input type="text" name="vlsc_oi" id="vlsc_oi" class="form-control" placeholder="OI" value="{{mov_consulta.vlsc_oi}}"></td>
-                        <td><input type="text" name="vlsc_ao" id="vlsc_ao" class="form-control" placeholder="AO" value="{{mov_consulta.vlsc_ao}}"></td>
-                        <td><input type="text" name="vlsc_PH" id="vlsc_PH" class="form-control" placeholder="PH" value="{{mov_consulta.vlsc_PH}}" ></td>
-                    </tr>
-                    <tr>
-                        <td><label for="vpsc_od">VPSC</label></td>
-                        <td><input type="text" name="vpsc_od" id="vpsc_od" class="form-control" placeholder="OD" value="{{mov_consulta.vpsc_od}}" ></td>
-                        <td><input type="text" name="vpsc_oi" id="vpsc_oi" class="form-control" placeholder="OI" value="{{mov_consulta.vpsc_od}}"></td>
-                        <td><input type="text" name="vpsc_ao" id="vpsc_ao" class="form-control" placeholder="AO" value="{{mov_consulta.vpsc_od}}" ></td>
-                        <td><input type="text" name="vpsc_PH" id="vpsc_PH" class="form-control" placeholder="PH" value="{{mov_consulta.vpsc_od}}" ></td>
-                    </tr>
-                    <tr>
-                        <td><label for="ducciones_od">DUCCIONES OD</label></td>
-                        <td colspan="4"><input type="text" name="ducciones_od" id="ducciones_od" class="form-control" value="{{mov_consulta.ducciones_od}}"></td>
-                    </tr>
-                    <tr>
-                        <td><label for="ducciones_oi">DUCCIONES OI</label></td>
-                        <td colspan="4"><input type="text" name="ducciones_oi" id="ducciones_oi" class="form-control"  value="{{mov_consulta.ducciones_oi}}"></td>
-                    </tr>
-                    <tr>
-                        <td><label for="ppc_od">PPC OD</label></td>
-                        <td colspan="4"><input type="text" name="ppc_od" id="ppc_od" class="form-control"  value="{{mov_consulta.ppc_od}}"></td>
-                    </tr>
-                    <tr>
-                        <td><label for="ppc_oi">PPC OI</label></td>
-                        <td colspan="4"><input type="text" name="ppc_oi" id="ppc_oi" class="form-control" value="{{mov_consulta.ppc_oi}}"></td>
-                    </tr>
-                    <tr>
-                        <td><label for="examen_externo">EXAMEN EXTERNO</label></td>
-                        <td colspan="4"><textarea id="examen_externo" name="examen_externo" rows="4" class="form-control" placeholder="Ingrese la Información..." value="{{mov_consulta.examen_externo}}"></textarea></td>
-                    </tr>
-                </tbody>
-            </table>
-            
-
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th colspan="2">
-                            <h6>OFTALMOSCOPIA</h6>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><label for="OFTALMOSCOPIA_derecho">OJO DERECHO</label></td>
-                        <td><input type="text" name="OFTALMOSCOPIA_derecho" id="OFTALMOSCOPIA_derecho" class="form-control" value="{{vista.OFTALMOSCOPIA_derecho}}"></td>
-                    </tr>
-                    <tr>
-                        <td><label for="OFTALMOSCOPIA_izquierdo">OJO IZQUIERDO</label></td>
-                        <td><input type="text" name="OFTALMOSCOPIA_izquierdo" id="OFTALMOSCOPIA_izquierdo" class="form-control" value="{{vista.OFTALMOSCOPIA_izquierdo}}"></td>
-                    </tr>
-                </tbody>
-                <thead>
-                    <tr>
-                        <th colspan="2">
-                            <h6>QUERATOMETRIA</h6>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><label for="ojo_drc_querato">OJO DERECHO</label></td>
-                        <td><input type="text" name="ojo_drc_querato" id="ojo_drc_querato" class="form-control" value="{{vista.ojo_drc_querato}}"></td>
-                    </tr>
-                    <tr>
-                        <td><label for="ojo_izq_querat">OJO IZQUIERDO</label></td>
-                        <td><input type="text" name="ojo_izq_querat" id="ojo_izq_querato" class="form-control" value="{{vista.ojo_izq_querato}}"></td>
-                    </tr>
-                </tbody>
-                <thead>
-                    <tr>
-                        <th colspan="8">
-                            <h6>RETINOSCOPIA</h6>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th>OJO DERECHO</th>
-                        <th>Esfera</th>
-                        <th>Cilindro</th>
-                        <th>Eje</th>
-                        <th>DP</th>
-                        <th>VL 20</th>
-                        <th>VP 20</th>
-                        <th>ADD</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><label for="esfera_retino">OJO DERECHO</label></td>
-                        <td><input type="text" name="esfera_retino" id="esfera_retino" class="form-control" placeholder="Esfera" value="{{vista.esfera_retino}}"></td>
-                        <td><input type="text" name="cilindro_retino" id="cilindro_retino" class="form-control" placeholder="Cilindro" value="{{vista.cilindro_retino}}"></td>
-                        <td><input type="text" name="eje_retino" id="eje_retino" class="form-control" placeholder="Eje" value="{{vista.eje_retino}}"></td>
-                        <td><input type="text" name="dp_retino" id="dp_retino" class="form-control" placeholder="D.P" value="{{vista.dp_retino}}"></td>
-                        <td><input type="text" name="vl20_retino" id="vl20_retino" class="form-control" placeholder="AV VL20/" value="{{vista.vl20_retino}}">></td>
-                        <td><input type="text" name="vp20_retino" id="vp20_retino" class="form-control" placeholder="AV VP20/"  value="{{vista.vp20_retino}}"></td>
-                        <td><input type="text" name="add_retino" id="add_retino" class="form-control" placeholder="ADD"  value="{{vista.add_retino}}"></td>
-                    </tr>
-                    <tr>
-                        <td><label for="esfera_retino_1">OJO IZQUIERDO</label></td>
-                        <td><input type="text" name="esfera_retino_1" id="esfera_retino_1" class="form-control" placeholder="Esfera" value="{{vista.esfera_retino_1}}"></td>
-                        <td><input type="text" name="cilindro_retino_1" id="cilindro_retino_1" class="form-control" placeholder="Cilindro" value="{{vista.cilindro_retino_1}}"></td>
-                        <td><input type="text" name="eje_retino_1" id="eje_retino_1" class="form-control" placeholder="Eje" value="{{vista.eje_retino_1}}"></td>
-                        <td><input type="text" name="dp_retino_1" id="dp_retino_1" class="form-control" placeholder="D.P" value="{{vista.dp_retino_1}}"></td>
-                        <td><input type="text" name="vl20_retino_1" id="vl20_retino_1" class="form-control" placeholder="AV VL20/" value="{{vista.vl20_retino_1}}"></td>
-                        <td><input type="text" name="vp20_retino_1" id="vp20_retino_1" class="form-control" placeholder="AV VP20/" value="{{vista.vp20_retino_1}}"></td>
-                        <td><input type="text" name="add_retino_1" id="add_retino_1" class="form-control" placeholder="ADD" value="{{vista.add_retino_1}}"></td>
-                    </tr>
-                </tbody>
-            </table>
-            
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th colspan="13">
-                                <h6>RX FINAL (Formulación)</h6>
-                            </th>
-                        </tr>
-                        <tr>
-                            <th></th>
-                            <th>Esfera</th>
-                            <th>Cilindro</th>
-                            <th>Eje</th>
-                            <th>DP</th>
-                            <th>VL20</th>
-                            <th>VP20</th>
-                            <th>ADD</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><label for="esfera">OJO DERECHO</label></td>
-                            <td><input type="text" name="esfera" id="esfera" class="form-control" placeholder="Esfera" value="{{vista.esfera}}"></td>
-                            <td><input type="text" name="cilindro" id="cilindro" class="form-control" placeholder="Cilindro" value="{{vista.cilindro}}"></td>
-                            <td><input type="text" name="eje" id="eje" class="form-control" placeholder="Eje" value="{{vista.eje}}"></td>
-                            <td><input type="text" name="dp" id="dp" class="form-control" placeholder="D.P" value="{{vista.dp}}"></td>
-                            <td><input type="text" name="vl20" id="vl20" class="form-control" placeholder="AV VL20/" value="{{vista.vl20}}"></td>
-                            <td><input type="text" name="vp20" id="vp20" class="form-control" placeholder="AV VP20/" value="{{vista.vp20}}"></td>
-                            <td><input type="text" name="add_0" id="add_0" class="form-control" placeholder="ADD" value="{{vista.add_0}}"></td>
-                        </tr>
-                        <tr>
-                            <td><label for="ojo_izq">OJO IZQUIERDO</label></td>
-                            <td><input type="text" name="esfera_1" id="esfera_1" class="form-control" placeholder="Esfera" value="{{vista.esfera_1}}"></td>
-                            <td><input type="text" name="cilindro_1" id="cilindro_1" class="form-control" placeholder="Cilindro" value="{{vista.cilindro_1}}"></td>
-                            <td><input type="text" name="eje_1" id="eje_1" class="form-control" placeholder="Eje" value="{{vista.eje_1}}"></td>
-                            <td><input type="text" name="dp_1" id="dp_1" class="form-control" placeholder="D.P" value="{{vista.dp_1}}"></td>
-                            <td><input type="text" name="vl20_1" id="vl20_1" class="form-control" placeholder="AV VL20/" value="{{vista.vl20_1}}"></td>
-                            <td><input type="text" name="vp20_1" id="vp20_1" class="form-control" placeholder="AV VP20/" value="{{vista.vp20_1}}"></td>
-                            <td><input type="text" name="add_1" id="add_1" class="form-control" placeholder="ADD" value="{{vista.add_1}}"></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"><label for="recomendación">Recomendación</label></td>
-                            <td colspan="6"><textarea id="recomendación" name="recomendación" rows="2" class="form-control" placeholder="Ingrese la Información..." value="{{vista.recomendación}}"></textarea></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"><label for="diagnostico">Diagnóstico</label></td>
-                            <td colspan="6"><textarea id="diagnostico" name="diagnostico" rows="2" class="form-control" placeholder="Ingrese la Información..." value="{{vista.diagnostico}}"></textarea></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"><label for="observación">Observación</label></td>
-                            <td colspan="6"><textarea id="observación" name="observación" rows="2" class="form-control" placeholder="Ingrese la Información..." value="{{vista.observación}}"></textarea></td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-                <table class="table">
-                    <table class="table">
-                        <h6>Formula Número</h6>
-
-                        <th><label for="tipo_lente">Tipo de Lente</label></th>
-                        <td><input type="text" name="tipo_lente" id="tipo_lente" class="form-control"  placeholder="Tipo de Lente" value="{{vista.tipo_lente}}"></td>
-                        <th><label for="montura">Montura</label></th>
-                        <td><input type="text" name="montura" id="montura" class="form-control" placeholder="Montura" value="{{vista.montura}}">
-                        </td>
-                        <tr>
-                            <th><label for="material">Material</label></th>
-                            <td><input type="text" name="material" id="material" class="form-control"
-                                    placeholder="Material" value="{{vista.material}}"></td>
-                            <th><label for="filtro">Filtro</label></th>
-                            <td><input type="text" name="filtro" id="filtro" class="form-control" placeholder="Filtro" value="{{vista.filtro}}">
-                            </td>
-                            <th><label for="color">Color</label></th>
-                            <td><input type="text" name="color" id="color" class="form-control" placeholder="Color" value="{{vista.color}}">
-                            </td>
-                        </tr>
-                        <tr>
-                            <th><label for="obs">Observación</label></th>
-                            <td><input type="text" name="obs" id="obs" class="form-control" placeholder="Observación" value="{{vista.obs}}">
-                            </td>
-                        </tr>
-                    </table>
-
-
-
-
-            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-    </form>
-    <a href="/consult" class="btn btn-secondary">Atrás</a>
-</body>
-
+    </from>
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <a href="/consult" class="btn btn-secondary">Atrás</a>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    </body>
 
 </html>
+
 {%endblock%}
