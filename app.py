@@ -29,7 +29,7 @@ app.secret_key = '876-105-169'
 
 
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/medico'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://jfarfan:2BDpVtjrjtAM6hMF4HOKrmlbHkbgpPCi@dpg-cqd6l3eehbks73bqn3k0-a.oregon-postgres.render.com/medico_jl29'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://jfarfan:2BDpVtjrjtAM6hMF4HOKrmlbHkbgpPCi@dpg-cqd6l3eehbks73bqn3k0-a/medico_jl29'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #configuración de las cookies 
