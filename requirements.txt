@@ -14,3 +14,4 @@ pymysql
 mysqlclient
 Flask-Principal
 Flask-Login
+flask-migrate
