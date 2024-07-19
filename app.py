@@ -21,7 +21,7 @@ app = Flask(__name__, template_folder='templates')
 app.secret_key = os.getenv('SECRET_KEY', '876-105-169')
 
 # Configuración de la base de datos
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://jfarfan:2BDpVtjrjtAM6hMF4HOKrmlbHkbgpPCi@dpg-cqd6l3eehbks73bqn3k0-a.oregon-postgres.render.com/medico_jl29')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://b71495f3662f53:9f980cae@us-cluster-east-01.k8s.cleardb.net/heroku_2ef5a35cb85643d'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #configuración de las cookies 
