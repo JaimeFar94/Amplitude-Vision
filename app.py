@@ -1,18 +1,13 @@
-from flask import Flask
+from flask import Flask, render_template, request, session, Response, flash, redirect, url_for, send_from_directory, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
-import os
-from flask_mail import Mail
-from flask_mail import Message
+from flask_mail import Mail, Message
 from flask_wtf.csrf import CSRFProtect  
 from functools import wraps
 import hashlib
 from datetime import datetime
 import pandas as pd
-from flask import render_template, request, session, Response ,flash ,  redirect, url_for,send_from_directory
-import pandas as pd
 from pandas_profiling import ProfileReport
-from flask import render_template, request, send_file
 import ydata_profiling
 import xml.etree.ElementTree as ET
 import tempfile
@@ -20,16 +15,13 @@ from flask_principal import Principal, Permission, RoleNeed, identity_loaded, Us
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import logging
 from logging.handlers import RotatingFileHandler
-import ydata_profiling
-import xml.etree.ElementTree as ET
-import tempfile
+import os
 
-app = Flask(__name__ , template_folder='templates')
-app.secret_key = '876-105-169'
+app = Flask(__name__, template_folder='templates')
+app.secret_key = os.getenv('SECRET_KEY', '876-105-169')
 
-
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/medico'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://jfarfan:2BDpVtjrjtAM6hMF4HOKrmlbHkbgpPCi@dpg-cqd6l3eehbks73bqn3k0-a/medico_jl29'
+# Configuración de la base de datos
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://jfarfan:2BDpVtjrjtAM6hMF4HOKrmlbHkbgpPCi@dpg-cqd6l3eehbks73bqn3k0-a/medico_jl29')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #configuración de las cookies 
