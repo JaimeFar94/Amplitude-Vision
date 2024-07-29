@@ -89,16 +89,15 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-between">
-                        <a href="/export" class="btn btn-info">Exportar inventario</a>
-                        {% if csv_path or report_path %}
-                            {% if csv_path %}
-                                <a href="{{ url_for('download_file', filename=csv_path) }}" class="btn btn-danger">Descargar CSV</a>
+                        <a href="{{ url_for('export') }}" class="btn btn-info">Exportar inventario</a>
+                        {% if csv_filename or report_filename %}
+                            {% if csv_filename %}
+                                <a href="{{ url_for('download_file', filename=csv_filename) }}" class="btn btn-danger">Descargar CSV</a>
                             {% endif %}
-                            {% if report_path %}
-                                <a href="{{ url_for('download_file', filename=report_path) }}" class="btn btn-dark">Ver Informe HTML</a>
+                            {% if report_filename %}
+                                <a href="{{ url_for('download_file', filename=report_filename) }}" class="btn btn-dark">Ver Informe HTML</a>
                             {% endif %}
                         {% endif %}
-                        <button type="submit" class="btn btn-success">Enviar</button>
                     </div>
                 </div>
             </div>
