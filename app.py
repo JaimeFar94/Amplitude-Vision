@@ -1115,6 +1115,53 @@ class recibo(db.Model):
             fields = ('id', 'fecha_compra', 'nombre_paciente', 'numero_recibo', 'documento', 'direccion', 'telefono', 'correo', 'cantidad', 'cantidad_1', 'cantidad_2', 'cantidad_3', 'cantidad_4', 'cantidad_5', 'cantidad_6', 'cantidad_7', 'detalle', 'detalle_1', 'detalle_2', 'detalle_3', 'detalle_4', 'detalle_5', 'detalle_6',
                       'detalle_7', 'valor_unitario', 'valor_unitario_1', 'valor_unitario_2', 'valor_unitario_3', 'valor_unitario_4', 'valor_unitario_5', 'valor_unitario_6', 'valor_unitario_7', 'valor_total', 'valor_total_1', 'valor_total_2', 'valor_total_3', 'valor_total_4', 'valor_total_5', 'valor_total_6', 'valor_total_7', 'total')
 
+
+# Agregar los datos dentro del inventario
+@app.route("/inventory", methods=['GET', 'POST'])
+@login_required
+@csrf.exempt
+@role_required('admin')
+def inventario():
+    if request.method == 'POST':
+        fecha = request.form['day']
+        sede = request.form['sede']
+        montura = request.form['montura']
+        cantidad_montura = request.form['cantidad_montura']
+        marca = request.form['marca']
+        referencia = request.form['referencia']
+        color = request.form['color']
+        cordones = request.form['cordones']
+        cantidad_cordones = request.form['cantidad_cordones']
+        estuches = request.form['estuches']
+        cantidad_estuches = request.form['cantidad_estuches']
+        stopper = request.form['stopper']
+        cantidad_stopper = request.form['cantidad_stopper']
+
+        inventario = Inventory(
+            fecha=fecha,
+            sede=sede,
+            montura=montura,
+            cantidad_montura=cantidad_montura,
+            marca=marca,
+            referencia=referencia,
+            color=color,
+            cordones=cordones,
+            cantidad_cordones=cantidad_cordones,
+            estuches=estuches,
+            cantidad_estuches=cantidad_estuches,
+            stopper=stopper,
+            cantidad_stopper=cantidad_stopper,
+        )
+        db.session.add(inventario)
+        db.session.commit()
+        print('Inventario agregado correctamente')
+        flash('Inventario agregado correctamente', 'success' )
+        return render_template('inventory.html')
+    else:
+        print('Inventario no Disponible')
+        return render_template('inventory.html')
+
+
 @app.route('/export')
 @login_required
 @role_required('admin')
@@ -1159,6 +1206,7 @@ def export():
 def download_file(filename):
     reports_dir = os.path.join(app.root_path, 'static', 'reports')
     return send_from_directory(reports_dir, filename, as_attachment=True)
+
 
 #Busqueda de Inventario
 
