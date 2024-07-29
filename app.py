@@ -1115,85 +1115,50 @@ class recibo(db.Model):
             fields = ('id', 'fecha_compra', 'nombre_paciente', 'numero_recibo', 'documento', 'direccion', 'telefono', 'correo', 'cantidad', 'cantidad_1', 'cantidad_2', 'cantidad_3', 'cantidad_4', 'cantidad_5', 'cantidad_6', 'cantidad_7', 'detalle', 'detalle_1', 'detalle_2', 'detalle_3', 'detalle_4', 'detalle_5', 'detalle_6',
                       'detalle_7', 'valor_unitario', 'valor_unitario_1', 'valor_unitario_2', 'valor_unitario_3', 'valor_unitario_4', 'valor_unitario_5', 'valor_unitario_6', 'valor_unitario_7', 'valor_total', 'valor_total_1', 'valor_total_2', 'valor_total_3', 'valor_total_4', 'valor_total_5', 'valor_total_6', 'valor_total_7', 'total')
 
-
-# Agregar los datos dentro del inventario
-@app.route("/inventory", methods=['GET', 'POST'])
-@login_required
-@csrf.exempt
-@role_required('admin')
-def inventario():
-    if request.method == 'POST':
-        fecha = request.form['day']
-        sede = request.form['sede']
-        montura = request.form['montura']
-        cantidad_montura = request.form['cantidad_montura']
-        marca = request.form['marca']
-        referencia = request.form['referencia']
-        color = request.form['color']
-        cordones = request.form['cordones']
-        cantidad_cordones = request.form['cantidad_cordones']
-        estuches = request.form['estuches']
-        cantidad_estuches = request.form['cantidad_estuches']
-        stopper = request.form['stopper']
-        cantidad_stopper = request.form['cantidad_stopper']
-
-        inventario = Inventory(
-            fecha=fecha,
-            sede=sede,
-            montura=montura,
-            cantidad_montura=cantidad_montura,
-            marca=marca,
-            referencia=referencia,
-            color=color,
-            cordones=cordones,
-            cantidad_cordones=cantidad_cordones,
-            estuches=estuches,
-            cantidad_estuches=cantidad_estuches,
-            stopper=stopper,
-            cantidad_stopper=cantidad_stopper,
-        )
-        db.session.add(inventario)
-        db.session.commit()
-        print('Inventario agregado correctamente')
-        flash('Inventario agregado correctamente', 'success' )
-        return render_template('inventory.html')
-    else:
-        print('Inventario no Disponible')
-        return render_template('inventory.html')
-
-
 @app.route('/export')
 @login_required
 @role_required('admin')
 @csrf.exempt
 def export():
-    data = Inventory.query.all()
-    df = pd.DataFrame([[item.id, item.fecha, item.sede, item.montura, item.cantidad_montura, item.marca, item.referencia, item.color, item.cordones,
-                        item.cantidad_cordones, item.estuches, item.cantidad_estuches, item.stopper, item.cantidad_stopper
-                        ] for item in data],
-                      columns=['ID', 'Fecha', 'Sede', 'Montura', 'Cantidad Montura', 'Marca', 'Referencia', 'Color', 'Cordones', 'Cantidad Cordones', 'Estuches', 'Cantidad Estuches', 'Stopper', 'Cantidad Stopper'])
+    try:
+        data = Inventory.query.all()
+        df = pd.DataFrame([[item.id, item.fecha, item.sede, item.montura, item.cantidad_montura, item.marca, item.referencia, item.color, item.cordones,
+                            item.cantidad_cordones, item.estuches, item.cantidad_estuches, item.stopper, item.cantidad_stopper
+                            ] for item in data],
+                          columns=['ID', 'Fecha', 'Sede', 'Montura', 'Cantidad Montura', 'Marca', 'Referencia', 'Color', 'Cordones', 'Cantidad Cordones', 'Estuches', 'Cantidad Estuches', 'Stopper', 'Cantidad Stopper'])
+        
+        # Crear directorio para informes si no existe
+        reports_dir = os.path.join(app.root_path, 'static', 'reports')
+        os.makedirs(reports_dir, exist_ok=True)
+        
+        # Generar archivo csv
+        csv_filename = f'inventory_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv'
+        csv_path = os.path.join(reports_dir, csv_filename)
+        df.to_csv(csv_path, index=False, sep=';')
+
+        # Generar perfil de datos
+        profile = ProfileReport(df, title='Perfil de Datos')
+        report_filename = f'report_{datetime.now().strftime("%Y%m%d_%H%M%S")}.html'
+        profile_html_path = os.path.join(reports_dir, report_filename)
+        profile.to_file(profile_html_path)
+
+        print('Se generó informe de manera correcta')
+        flash('Se generó informe de manera correcta', 'success')
+        
+        # Redirigir al usuario a la página de inventario con enlaces de descarga
+        return render_template('inventory.html', csv_filename=csv_filename, report_filename=report_filename)
     
-    #Generar archivo csv
-    csv_path = os.path.join ('inventory.csv')
-    df.to_csv(csv_path, index=False, sep=';' )
-
-    # Generar perfil de datos
-    profile = ProfileReport(df, title='Perfil de Datos')
-    profile_html_path = os.path.join('reporte.html')
-    profile.to_file(profile_html_path)
-
-    print('Se Genero Informe de Manera Correcta')
-    flash('Se Genero Informe de Manera Correcta', 'success' )
-    # Redirigir al usuario a la página de inventario con enlaces de descarga
-    return render_template('inventory.html', csv_path='inventory.csv', report_path='reporte.html')
-
+    except Exception as e:
+        print(f'Error al generar el informe: {str(e)}')
+        flash('Error al generar el informe', 'error')
+        return render_template('inventory.html')
 
 @app.route('/download/<filename>')
+@login_required
+@role_required('admin')
 def download_file(filename):
-    csv_path = os.path.join(os.getcwd(), 'Informes')
-    return send_from_directory(csv_path, filename)
-
-
+    reports_dir = os.path.join(app.root_path, 'static', 'reports')
+    return send_from_directory(reports_dir, filename, as_attachment=True)
 
 #Busqueda de Inventario
 
