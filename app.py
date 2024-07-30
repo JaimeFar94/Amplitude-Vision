@@ -16,7 +16,6 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 import logging
 from logging.handlers import RotatingFileHandler
 import os
-from WeasyPrint import HTML
 
 app = Flask(__name__, template_folder='templates')
 app.secret_key = os.getenv('SECRET_KEY', '876-105-169')
@@ -1407,48 +1406,37 @@ def compra():
         )
         db.session.add(compra)
         db.session.commit()
-      # Generar el XML (esto se mantiene igual)
+        # Generar el XML
         xml_compra = generar_xml_compra(compra)
-        print(xml_compra)
+        print(xml_compra)  # Imprimir o guardar el XML según sea necesario
+
 
         # Guardar el XML en un archivo temporal
         with tempfile.NamedTemporaryFile(delete=False, suffix=".xml") as temp_xml:
             temp_xml.write(xml_compra.encode('utf-8'))
             temp_xml_path = temp_xml.name
 
-        # Generar el PDF
-        html = render_template('recibo_pdf.html', compra=compra)
-        pdf = HTML(string=html).write_pdf()
+        #Enviar el archivo adjunto
 
-        # Guardar el PDF en un archivo temporal
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
-            temp_pdf.write(pdf)
-            temp_pdf_path = temp_pdf.name
-
-        # Enviar el correo con los adjuntos
         msg = Message('Recibo de Compra',
                       sender=app.config['MAIL_PASSWORD'],
                       recipients=[compra.correo])
         msg.html = render_template('email_compra.html', compra=compra)
 
-        # Adjuntar el archivo XML
+         # Adjuntar el archivo XML
         with open(temp_xml_path, 'rb') as f:
             msg.attach(f'{numero_recibo}.xml', 'application/xml', f.read())
 
-        # Adjuntar el archivo PDF
-        with open(temp_pdf_path, 'rb') as f:
-            msg.attach(f'{numero_recibo}.pdf', 'application/pdf', f.read())
-
+        # Generar archivo PDF
+        
+        
+  
         mail.send(msg)
         flash('El correo se envió con éxito', 'success')
         print('El correo se envió con éxito')
-
-        # Eliminar archivos temporales
-        os.remove(temp_xml_path)
-        os.remove(temp_pdf_path)
-
         return render_template('recibo.html')
     else:
+        # Si la solicitud no es un POST, simplemente renderiza el template sin la variable compra
         print('Recibo no enviado')
         flash('Recibo no enviado', 'danger')
         return render_template('recibo.html')
