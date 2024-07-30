@@ -24,36 +24,36 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="day" class="form-label">Fecha</label>
-                            <input type="date" class="form-control" name="day" id="day">
+                            <input type="date" class="form-control" name="day" id="day" required>
                         </div>
                         <div class="col-md-6">
                             <label for="numero-recibo" class="form-label">Factura de Venta</label>
-                            <input type="text" class="form-control" name="numero-recibo" id="numero-recibo" readonly>
+                            <input type="text" class="form-control" name="numero-recibo" id="numero-recibo" readonly >
                             <input type="hidden" name="numero-recibo" id="numero-recibo" value="{{ numeroRecibo }}">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <label for="nombre_paciente" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" name="nombre_paciente" id="nombre_paciente">
+                            <input type="text" class="form-control" name="nombre_paciente" id="nombre_paciente" required>
                         </div>
                         <div class="col-md-4">
                             <label for="cc" class="form-label">CC</label>
-                            <input type="text" class="form-control" name="cc" id="cc">
+                            <input type="text" class="form-control" name="cc" id="cc" required>
                         </div>
                         <div class="col-md-4">
                             <label for="telefono" class="form-label">Teléfono</label>
-                            <input type="text" class="form-control" name="telefono" id="telefono">
+                            <input type="text" class="form-control" name="telefono" id="telefono" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <label for="direccion" class="form-label">Dirección</label>
-                            <input type="text" class="form-control" name="direccion" id="direccion">
+                            <input type="text" class="form-control" name="direccion" id="direccion" required>
                         </div>
                         <div class="col-md-4">
                             <label for="correo" class="form-label">Correo</label>
-                            <input type="email" class="form-control" name="correo" id="correo">
+                            <input type="email" class="form-control" name="correo" id="correo" required>
                         </div>
                     </div>
                     <div class="table-responsive mb-3">
@@ -68,52 +68,52 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><input type="text" name="cantidad" id="cantidad" class="form-control"></td>
-                                    <td><input type="text" name="detalle" id="detalle" class="form-control"></td>
-                                    <td><input type="text" name="v_unidad" id="v_unidad" class="form-control" placeholder="$"></td>
-                                    <td><input type="text" name="v_total" id="v_total" class="form-control" placeholder="$"></td>
+                                    <td><input type="text" name="cantidad" id="cantidad" class="form-control" required></td>
+                                    <td><input type="text" name="detalle" id="detalle" class="form-control" required ></td>
+                                    <td><input type="text" name="v_unidad" id="v_unidad" class="form-control" placeholder="$" required></td>
+                                    <td><input type="text" name="v_total" id="v_total" class="form-control" placeholder="$" required></td>
                                 </tr>
                                 <tr>
-                                    <td><input type="text" name="cantidad_1" id="cantidad_1" class="form-control"></td>
-                                    <td><input type="text" name="detalle_1" id="detalle_1" class="form-control"></td>
-                                    <td><input type="text" name="v_unidad_1" id="v_unidad_1" class="form-control" placeholder="$"></td>
-                                    <td><input type="text" name="v_total_1" id="v_total_1" class="form-control" placeholder="$"></td>
+                                    <td><input type="text" name="cantidad_1" id="cantidad_1" class="form-control" required></td>
+                                    <td><input type="text" name="detalle_1" id="detalle_1" class="form-control" required ></td>
+                                    <td><input type="text" name="v_unidad_1" id="v_unidad_1" class="form-control" placeholder="$" required></td>
+                                    <td><input type="text" name="v_total_1" id="v_total_1" class="form-control" placeholder="$" required></td>
                                 </tr>
                                 <tr>
-                                    <td><input type="text" name="cantidad_2" id="cantidad_2" class="form-control"></td>
-                                    <td><input type="text" name="detalle_2" id="detalle_2" class="form-control"></td>
-                                    <td><input type="text" name="v_unidad_2" id="v_unidad_2" class="form-control" placeholder="$"></td>
-                                    <td><input type="text" name="v_total_2" id="v_total_2" class="form-control" placeholder="$"></td>
+                                    <td><input type="text" name="cantidad_2" id="cantidad_2" class="form-control" required></td>
+                                    <td><input type="text" name="detalle_2" id="detalle_2" class="form-control" required></td>
+                                    <td><input type="text" name="v_unidad_2" id="v_unidad_2" class="form-control" placeholder="$" required></td>
+                                    <td><input type="text" name="v_total_2" id="v_total_2" class="form-control" placeholder="$" required></td>
                                 </tr>
                                 <tr>
-                                    <td><input type="text" name="cantidad_3" id="cantidad_3" class="form-control"></td>
-                                    <td><input type="text" name="detalle_3" id="detalle_3" class="form-control"></td>
-                                    <td><input type="text" name="v_unidad_3" id="v_unidad_3" class="form-control" placeholder="$"></td>
-                                    <td><input type="text" name="v_total_3" id="v_total_3" class="form-control" placeholder="$"></td>
+                                    <td><input type="text" name="cantidad_3" id="cantidad_3" class="form-control" required></td>
+                                    <td><input type="text" name="detalle_3" id="detalle_3" class="form-control" required></td>
+                                    <td><input type="text" name="v_unidad_3" id="v_unidad_3" class="form-control" placeholder="$" required></td>
+                                    <td><input type="text" name="v_total_3" id="v_total_3" class="form-control" placeholder="$" required></td>
                                 </tr>
                                 <tr>
-                                    <td><input type="text" name="cantidad_4" id="cantidad_4" class="form-control"></td>
-                                    <td><input type="text" name="detalle_4" id="detalle_4" class="form-control"></td>
-                                    <td><input type="text" name="v_unidad_4" id="v_unidad_4" class="form-control" placeholder="$"></td>
-                                    <td><input type="text" name="v_total_4" id="v_total_4" class="form-control" placeholder="$"></td>
+                                    <td><input type="text" name="cantidad_4" id="cantidad_4" class="form-control" required></td>
+                                    <td><input type="text" name="detalle_4" id="detalle_4" class="form-control" required></td>
+                                    <td><input type="text" name="v_unidad_4" id="v_unidad_4" class="form-control" placeholder="$" required></td>
+                                    <td><input type="text" name="v_total_4" id="v_total_4" class="form-control" placeholder="$" required></td>
                                 </tr>
                                 <tr>
-                                    <td><input type="text" name="cantidad_5" id="cantidad_5" class="form-control"></td>
-                                    <td><input type="text" name="detalle_5" id="detalle_5" class="form-control"></td>
-                                    <td><input type="text" name="v_unidad_5" id="v_unidad_5" class="form-control" placeholder="$"></td>
-                                    <td><input type="text" name="v_total_5" id="v_total_5" class="form-control" placeholder="$"></td>
+                                    <td><input type="text" name="cantidad_5" id="cantidad_5" class="form-control" required></td>
+                                    <td><input type="text" name="detalle_5" id="detalle_5" class="form-control" required></td>
+                                    <td><input type="text" name="v_unidad_5" id="v_unidad_5" class="form-control" placeholder="$" required></td>
+                                    <td><input type="text" name="v_total_5" id="v_total_5" class="form-control" placeholder="$" required></td>
                                 </tr>
                                 <tr>
-                                    <td><input type="text" name="cantidad_6" id="cantidad_6" class="form-control"></td>
-                                    <td><input type="text" name="detalle_6" id="detalle_6" class="form-control"></td>
-                                    <td><input type="text" name="v_unidad_6" id="v_unidad_6" class="form-control" placeholder="$"></td>
-                                    <td><input type="text" name="v_total_6" id="v_total_6" class="form-control" placeholder="$"></td>
+                                    <td><input type="text" name="cantidad_6" id="cantidad_6" class="form-control" required></td>
+                                    <td><input type="text" name="detalle_6" id="detalle_6" class="form-control" required></td>
+                                    <td><input type="text" name="v_unidad_6" id="v_unidad_6" class="form-control" placeholder="$" required></td>
+                                    <td><input type="text" name="v_total_6" id="v_total_6" class="form-control" placeholder="$" required></td>
                                 </tr>
                                 <tr>
-                                    <td><input type="text" name="cantidad_7" id="cantidad_7" class="form-control"></td>
-                                    <td><input type="text" name="detalle_7" id="detalle_7" class="form-control"></td>
-                                    <td><input type="text" name="v_unidad_7" id="v_unidad_7" class="form-control" placeholder="$"></td>
-                                    <td><input type="text" name="v_total_7" id="v_total_7" class="form-control" placeholder="$"></td>
+                                    <td><input type="text" name="cantidad_7" id="cantidad_7" class="form-control" required></td>
+                                    <td><input type="text" name="detalle_7" id="detalle_7" class="form-control" required></td>
+                                    <td><input type="text" name="v_unidad_7" id="v_unidad_7" class="form-control" placeholder="$" required></td>
+                                    <td><input type="text" name="v_total_7" id="v_total_7" class="form-control" placeholder="$" required></td>
                                 </tr>
                             </tbody>
                         </table>
