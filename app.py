@@ -16,7 +16,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 import logging
 from logging.handlers import RotatingFileHandler
 import os
-from Weasyprint import HTML
+from WeasyPrint import HTML
 
 app = Flask(__name__, template_folder='templates')
 app.secret_key = os.getenv('SECRET_KEY', '876-105-169')
