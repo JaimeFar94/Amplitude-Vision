@@ -16,6 +16,12 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 import logging
 from logging.handlers import RotatingFileHandler
 import os
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
 
 
 app = Flask(__name__, template_folder='templates')
@@ -114,7 +120,7 @@ class paciente(db.Model):
     genero = db.Column(db.String(50))
     correo_electronico = db.Column(db.String(255))
     direccion = db.Column(db.Text)
-    telefono = db.Column(db.String(40))
+    telefono = db.Column(db.String(50))
     eps = db.Column(db.String(50))
     cargo = db.Column(db.String(100))
     acompanante = db.Column(db.String(100), default='Sin acompañante')
@@ -1033,7 +1039,7 @@ class recibo(db.Model):
     documento = db.Column(db.Integer)
     nombre_paciente = db.Column(db.String(200))
     direccion = db.Column(db.String(200))
-    telefono = db.Column(db.Integer)
+    telefono = db.Column(db.String(50))
     correo = db.Column(db.String(200))
     cantidad = db.Column(db.Integer)
     cantidad_1 = db.Column(db.Integer)
@@ -1313,6 +1319,88 @@ def generar_xml_compra(compra):
 
 
 
+
+def generar_pdf_compra(compra):
+    # Crear un archivo PDF temporal
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
+        pdf_path = temp_pdf.name
+
+    # Configurar el documento
+    doc = SimpleDocTemplate(pdf_path, pagesize=letter)
+    styles = getSampleStyleSheet()
+    elements = []
+
+    # Título
+    elements.append(Paragraph(f"Recibo de Compra: {compra.numero_recibo}", styles['Title']))
+    elements.append(Paragraph(f"Fecha: {compra.fecha_compra}", styles['Normal']))
+
+    # Información del cliente
+    cliente_data = [
+        ["Cliente", compra.nombre_paciente],
+        ["Documento", compra.documento],
+        ["Dirección", compra.direccion],
+        ["Teléfono", compra.telefono],
+        ["Correo", compra.correo]
+    ]
+    cliente_table = Table(cliente_data, colWidths=[100, 300])
+    cliente_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (0, -1), colors.lightgrey),
+        ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 12),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 12),
+        ('TOPPADDING', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+    ]))
+    elements.append(cliente_table)
+    elements.append(Paragraph("<br/><br/>", styles['Normal']))
+
+    # Detalles de la compra
+    detalles_data = [
+        ["Detalle", "Cantidad", "Valor Unitario", "Valor Total"]
+    ]
+    for i in range(8):  # Asumiendo que tienes hasta 8 detalles (0-7)
+        detalle = getattr(compra, f'detalle_{i}' if i > 0 else 'detalle', '')
+        cantidad = getattr(compra, f'cantidad_{i}' if i > 0 else 'cantidad', '')
+        valor_unitario = getattr(compra, f'valor_unitario_{i}' if i > 0 else 'valor_unitario', '')
+        valor_total = getattr(compra, f'valor_total_{i}' if i > 0 else 'valor_total', '')
+        
+        if detalle:  # Solo añadir filas con detalles
+            detalles_data.append([detalle, cantidad, valor_unitario, valor_total])
+
+    detalles_table = Table(detalles_data, colWidths=[200, 100, 100, 100])
+    detalles_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+        ('ALIGN', (0, 1), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 1), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 6),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ]))
+    elements.append(detalles_table)
+
+    # Total
+    elements.append(Paragraph("<br/><br/>", styles['Normal']))
+    elements.append(Paragraph(f"Total: {compra.total}", styles['Heading2']))
+
+    # Generar el PDF
+    doc.build(elements)
+
+    return pdf_path
+
 @app.route('/recibo', methods=['GET', 'POST'])
 @csrf.exempt
 @login_required
@@ -1418,11 +1506,8 @@ def compra():
             temp_xml.write(xml_compra.encode('utf-8'))
             temp_xml_path = temp_xml.name
 
-
-        #Generar el PDF 
-
-        pdf_path = generar_pdf(compra)
-
+        # Generar el PDF
+        pdf_path = generar_pdf_compra(compra)
         #Enviar el archivo adjunto
 
         msg = Message('Recibo de Compra',
@@ -1434,13 +1519,17 @@ def compra():
         with open(temp_xml_path, 'rb') as f:
             msg.attach(f'{numero_recibo}.xml', 'application/xml', f.read())
 
+   # Adjuntar el archivo PDF
+        with open(pdf_path, 'rb') as f:
+            msg.attach(f'{compra.numero_recibo}.pdf', 'application/pdf', f.read())
+
+
+        mail.send(msg)
+
         # Limpieza de archivos temporales
         os.unlink(temp_xml_path)
-
+        os.unlink(pdf_path)
         
-        
-    
-        mail.send(msg)
         flash('El correo se envió con éxito', 'success')
         print('El correo se envió con éxito')
         return render_template('recibo.html')
@@ -1449,6 +1538,7 @@ def compra():
         print('Recibo no enviado')
         flash('Recibo no enviado', 'danger')
         return render_template('recibo.html')
+
 
 
 
