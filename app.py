@@ -16,6 +16,9 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 import logging
 from logging.handlers import RotatingFileHandler
 import os
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+
 
 app = Flask(__name__, template_folder='templates')
 app.secret_key = os.getenv('SECRET_KEY', '876-105-169')
@@ -1310,6 +1313,25 @@ def generar_xml_compra(compra):
 
     return ET.tostring(root, encoding='unicode')
 
+#Generar un PDF
+
+def generar_pdf(compra):
+
+    #Generar un archivo temporal del PDF
+    with tempfile.NamedTemporaryFile (delete= False, suffix=".pdf" ) as temp_pdf:
+        pdf_path = temp_pdf
+    #Crear el PDF 
+
+    c =  canvas.Canvas(pdf_path, pagesize=letter)
+    width, height = letter
+
+    # Agregar contenido al PDF
+    c.drawString(width - 100, height - 100, f"Recibo de Compra: {compra.numero_recibo}")
+    c.drawString(width - 100, height - 120, f"Fecha: {compra.fecha_compra}")
+    c.drawString(width - 100, height - 140, f"Cliente: {compra.nombre_paciente}")
+
+    c.save
+    return pdf_path
 
 @app.route('/recibo', methods=['GET', 'POST'])
 @csrf.exempt
@@ -1416,6 +1438,11 @@ def compra():
             temp_xml.write(xml_compra.encode('utf-8'))
             temp_xml_path = temp_xml.name
 
+
+        #Generar el PDF 
+
+        pdf_path = generar_pdf(compra)
+
         #Enviar el archivo adjunto
 
         msg = Message('Recibo de Compra',
@@ -1427,10 +1454,16 @@ def compra():
         with open(temp_xml_path, 'rb') as f:
             msg.attach(f'{numero_recibo}.xml', 'application/xml', f.read())
 
-        # Generar archivo PDF
+        # Adjuntar el archivo PDF
+        with open(pdf_path, 'rb') as f:
+            msg.attach(f'{compra.numero_recibo}.pdf', 'application/pdf', f.read())
+
+        # Limpieza de archivos temporales
+        os.unlink(temp_xml_path)
+        os.unlink(pdf_path)
         
         
-  
+        #Enviar el correo
         mail.send(msg)
         flash('El correo se envió con éxito', 'success')
         print('El correo se envió con éxito')
