@@ -15,4 +15,3 @@ mysqlclient
 Flask-Principal
 Flask-Login
 flask-migrate
-reportlab
