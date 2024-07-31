@@ -22,7 +22,7 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
-
+from flask_migrate import Migrate
 
 app = Flask(__name__, template_folder='templates')
 app.secret_key = os.getenv('SECRET_KEY', '876-105-169')
@@ -47,7 +47,7 @@ consulta_permission = Permission(RoleNeed('consulta'))
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
-
+migrate = Migrate(app, db)
 
 
 #Para envio de Correos 
