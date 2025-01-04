@@ -28,7 +28,9 @@ app = Flask(__name__, template_folder='templates')
 app.secret_key = os.getenv('SECRET_KEY', '876-105-169')
 
 # Configuración de la base de datos
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('postgresql://amplitudvisionbd_user:wXi4SnblGZpWzKqgfiCJBf0e9ZGaLqTh@dpg-ctsm331opnds73c6sc50-a/amplitudvisionbd')  # Conexión desde variable de entorno
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+#postgresql://amplitudvisionbd_user:wXi4SnblGZpWzKqgfiCJBf0e9ZGaLqTh@dpg-ctsm331opnds73c6sc50-a/amplitudvisionbd
+ # Conexión desde variable de entorno
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #configuración de las cookies 
