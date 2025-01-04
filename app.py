@@ -27,10 +27,12 @@ from flask_migrate import Migrate
 app = Flask(__name__, template_folder='templates')
 app.secret_key = os.getenv('SECRET_KEY', '876-105-169')
 
-# Configuración de la base de datos
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-#postgresql://amplitudvisionbd_user:wXi4SnblGZpWzKqgfiCJBf0e9ZGaLqTh@dpg-ctsm331opnds73c6sc50-a/amplitudvisionbd
- # Conexión desde variable de entorno
+# Obtener y corregir la URL de la base de datos
+database_url = os.environ.get('DATABASE_URL')
+if database_url and database_url.startswith('postgres://'):
+    database_url = database_url.replace('postgres://', 'postgresql://', 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #configuración de las cookies 
