@@ -28,7 +28,7 @@ app = Flask(__name__, template_folder='templates')
 app.secret_key = os.getenv('SECRET_KEY', '876-105-169')
 
 # Configuración de la base de datos
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://b71495f3662f53:9f980cae@us-cluster-east-01.k8s.cleardb.net/heroku_2ef5a35cb85643d'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('postgresql://amplitudvisionbd_user:wXi4SnblGZpWzKqgfiCJBf0e9ZGaLqTh@dpg-ctsm331opnds73c6sc50-a/amplitudvisionbd')  # Conexión desde variable de entorno
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #configuración de las cookies 
