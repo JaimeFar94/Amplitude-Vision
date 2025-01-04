@@ -1225,6 +1225,8 @@ def consultinventory():
     inventory = Inventory.query.all()  # Obtener todos los registros de la tabla Inventory
     return render_template('consultinventory.html', inventory=inventory)
 
+#Editar dentro de un inventario
+
 
 # Busqueda por # recibo
 
@@ -1447,10 +1449,6 @@ def compra():
         valor_total_6 = request.form['v_total_6']
         valor_total_7 = request.form['v_total_7']
         total = request.form['total']
-
-
-
-        
 
         compra = recibo(
             fecha_compra=fecha_compra,
