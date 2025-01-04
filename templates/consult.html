@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CONSULT</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         .section-title {
             background-color: #343a40;
@@ -34,7 +35,7 @@
                         <input type="text" name="consult" id="consult" class="form-control">
                     </div>
                     <div class="col-auto align-self-end">
-                        <button type="submit" class="btn btn-success">Buscar</button>
+                        <button type="submit" class="btn btn-success"><i class="fa fa-search" aria-hidden="true"></i>  Buscar</button>
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     </div>
                 </div>
@@ -349,15 +350,15 @@
 
                     <tr>
                         <td colspan="12" class="text-center">
-                            <a href="/edit/{{ p.documento }}/update" class="btn btn-primary mr-2">Editar</a>
-                            <a href="/delete/{{ p.documento }}" class="btn btn-danger">Eliminar Paciente</a>
+                            <a href="/edit/{{ p.documento }}/update" class="btn btn-primary mr-2"><i class="fas fa-edit"></i>  Editar</a>
+                            <a href="/delete/{{ p.documento }}" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i>  Eliminar Paciente</a>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
             <div class="text-center mt-3">
-                <button id="print-button" class="btn btn-info">Imprimir Información del Paciente</button>
+                <button id="print-button" class="btn btn-info"><i class="fa fa-print" aria-hidden="true"></i>Imprimir Información del Paciente</button>
             </div>
             {% else %}
             <div class="alert alert-warning" role="alert">
@@ -367,7 +368,7 @@
         </div>
 
         <div class="row justify-content-center">
-            <a href="/menu" class="btn btn-secondary">Atrás</a>
+            <a href="/menu" class="btn btn-secondary"><i class="fa fa-arrow-left" aria-hidden="true"></i> Atrás</a>
         </div>
     </div>
 

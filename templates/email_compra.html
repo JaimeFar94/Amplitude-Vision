@@ -22,85 +22,51 @@
     <div class="container mt-5">
         <h1>Tu Compra</h1>
         <!-- Comprobamos si hay datos de compra para mostrar -->
-        {% if compra %}
+        {% if venta %}
         <table class="table table-bordered table-hover">
             <thead class="table-light">
                 <tr>
-                    <th>FECHA</th>
-                    <td>{{compra.fecha_compra}}</td>
-                    <th>FACTURA DE VENTA</th>
-                    <td>{{compra.numero_recibo}}</td>
+                    <th>Fecha</th>
+                    <td> {{venta.fecha_venta}} </td>
+                    <th> Factura de Venta </th>
+                    <td> {{venta.numero_recibo}} </td>
                 </tr>
                 <tr>
-                    <th>NOMBRE</th>
-                    <td>{{compra.nombre_paciente}}</td>
-                    <th>CC</th>
-                    <td>{{compra.documento}}</td>
+                    <th>Nombre</th>
+                    <td>{{venta.nombre}}</td>
+                    <th>Documento</th>
+                    <td>{{venta.cliente_id}}</td>
                 </tr>
                 <tr>
-                    <th>DIRECCIÓN</th>
-                    <td>{{compra.direccion}}</td>
-                    <th>TELÉFONO</th>
-                    <td>{{compra.telefono}}</td>
-                    <th>CORREO</th>
-                    <td>{{compra.correo}}</td>
+                    <th>Dirección</th>
+                    <td>{{venta.direccion}}</td>
+                    <th>Teléfono</th>
+                    <td>{{venta.telefono}}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td colspan="3">{{venta.email}}</td>
                 </tr>
             </thead>
             <tbody>
+
+                {% for detalle in venta.detalles %}
                 <tr>
-                    <th>CANTIDAD</th>
-                    <td>{{compra.cantidad}}</td>
-                    <td>{{compra.cantidad_1}}</td>
-                    <td>{{compra.cantidad_2}}</td>
-                    <td>{{compra.cantidad_3}}</td>
-                    <td>{{compra.cantidad_4}}</td>
-                    <td>{{compra.cantidad_5}}</td>
-                    <td>{{compra.cantidad_6}}</td>
-                    <td>{{compra.cantidad_7}}</td>
+                    <th> Producto </th>
+                    <td>{{ detalle.tipo_producto }}</td>
+                    <th> Cantidad </th>
+                    <td>{{detalle.cantidad}}</td>
+                    <th> Subtotal </th>
+                    <td>{{detalle.subtotal}}</td>
                 </tr>
+                {% endfor %}
                 <tr>
-                    <th>DETALLE</th>
-                    <td>{{compra.detalle}}</td>
-                    <td>{{compra.detalle_1}}</td>
-                    <td>{{compra.detalle_2}}</td>
-                    <td>{{compra.detalle_3}}</td>
-                    <td>{{compra.detalle_4}}</td>
-                    <td>{{compra.detalle_5}}</td>
-                    <td>{{compra.detalle_6}}</td>
-                    <td>{{compra.detalle_7}}</td>
+                    <th>Total</th>
+                    <td colspan="5">{{venta.total}}</td>
                 </tr>
-                <tr>
-                    <th>VALOR UNIDAD</th>
-                    <td>{{compra.valor_unitario}}</td>
-                    <td>{{compra.valor_unitario_1}}</td>
-                    <td>{{compra.valor_unitario_2}}</td>
-                    <td>{{compra.valor_unitario_3}}</td>
-                    <td>{{compra.valor_unitario_4}}</td>
-                    <td>{{compra.valor_unitario_5}}</td>
-                    <td>{{compra.valor_unitario_6}}</td>
-                    <td>{{compra.valor_unitario_7}}</td>
-                </tr>
-                <tr>
-                    <th>VALOR TOTAL</th>
-                    <td>{{compra.valor_total}}</td>
-                    <td>{{compra.valor_total_1}}</td>
-                    <td>{{compra.valor_total_2}}</td>
-                    <td>{{compra.valor_total_3}}</td>
-                    <td>{{compra.valor_total_4}}</td>
-                    <td>{{compra.valor_total_5}}</td>
-                    <td>{{compra.valor_total_6}}</td>
-                    <td>{{compra.valor_total_7}}</td>
-                </tr>
-                <tr>
-                    <th>TOTAL</th>
-                    <td colspan="8">{{compra.total}}</td>
-                </tr>
+
             </tbody>
         </table>
-        {% else %}
-        <div class="alert alert-warning text-center" role="alert">
-            No hay datos de compra disponibles.
-        </div>
         {% endif %}
     </div>
     <!-- Enlace al archivo JavaScript de Bootstrap (opcional, solo si necesitas componentes interactivos) -->

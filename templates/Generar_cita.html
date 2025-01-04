@@ -1,0 +1,63 @@
+{% extends "layouth.html" %}
+{% block content %}
+    <h1 class="text-center mb-4">Próxima Cita Médica</h1>
+    <div class="table-responsive">
+        <!-- Formulario de búsqueda del paciente -->
+        <form id="search-form" method="post" action="/Generar_cita" class="mt-3">
+            <div class="row mb-3">
+                <div class="col">
+                    <label for="consult" class="form-label">Indique el Número de Documento:</label>
+                    <input type="text" name="consult" id="consult" class="form-control" required>
+                </div>
+                <div class="col-auto align-self-end">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-search" aria-hidden="true"></i> Buscar</button>
+                </div>
+            </div>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="action" value="buscar">
+        </form>
+
+        <!-- Mostrar los datos del paciente y permitir agendar la cita -->
+        {% if pacientes %}
+        <form id="cita-form" method="post" action="/Generar_cita">
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th colspan="12" class="text-center">Datos del paciente</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in pacientes %}
+                    <tr>
+                        <th>Tipo de Documento</th>
+                        <td>{{ p.tipo }}</td>
+                        <th>Documento</th>
+                        <td>{{ p.documento }}</td>
+                    </tr>
+                    <tr>
+                        <th>Nombre</th>
+                        <td>{{ p.nombre_paciente }}</td>
+                        <td><input type="date" id="calendar" name="calendar" required></td>
+                        <td><input type="time" id="reloj" name="reloj" required></td>
+                    </tr>
+                    <tr>
+                        <td><textarea name="note" rows="4" cols="50" id="note" placeholder="Ingrese alguna nota..."></textarea></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="consult" value="{{ pacientes[0].documento }}">
+            <input type="hidden" name="action" value="agendar_cita">
+            <button type="submit" class="btn btn-primary"><i class="fa fa-calendar"></i> Agendar Cita</button>
+        </form>
+        {% else %}
+        <div class="alert alert-warning" role="alert">
+            No se encontraron datos del paciente.
+        </div>
+        {% endif %}
+        <div class="row justify-content-center mt-3">
+            <a href="/menu" class="btn btn-secondary"><i class="fa fa-arrow-left" aria-hidden="true"></i> Atrás</a>
+        </div>
+    </div>
+{% endblock %}

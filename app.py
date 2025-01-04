@@ -23,6 +23,10 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 from flask_migrate import Migrate
+from datetime import datetime
+from decimal import Decimal
+from sqlalchemy.orm import joinedload
+
 
 app = Flask(__name__, template_folder='templates')
 app.secret_key = os.getenv('SECRET_KEY', '876-105-169')
@@ -124,7 +128,7 @@ class paciente(db.Model):
     genero = db.Column(db.String(50))
     correo_electronico = db.Column(db.String(255))
     direccion = db.Column(db.Text)
-    telefono = db.Column(db.String(50))
+    telefono = db.Column(db.String(40))
     eps = db.Column(db.String(50))
     cargo = db.Column(db.String(100))
     acompanante = db.Column(db.String(100), default='Sin acompañante')
@@ -408,6 +412,44 @@ class TaskSchema(ma.Schema):
 
 task_schema = TaskSchema()
 task_schema = TaskSchema(many=True)
+
+# Registro de Agendamiento de Cita Medica
+class generar_cita(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    calendar = db.Column(db.DateTime)
+    time = db.Column(db.Time)
+    note = db.Column(db.String(500))
+    paciente_documento = db.Column(db.Integer, db.ForeignKey(
+        'paciente.documento', onupdate='CASCADE', ondelete='CASCADE'))
+    
+    def __init__(self, calendar=None, time=None, note=None, paciente_documento=None):
+        self.calendar = calendar
+        self.time = time
+        self.note = note
+        self.paciente_documento = paciente_documento
+
+    class TaskSchema(ma.Schema):
+        class Meta:
+            fields = ('calendar', 'time', 'note')
+
+# Registro de Eliminar
+class delete(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    eliminado = db.Column(db.Boolean, default=False)
+    fecha_eliminacion = db.Column(db.DateTime)
+    nombre_eliminado = db.Column(db.String(100))
+    documento_eliminado = db.Column(db.String(100))
+
+    def __init__(self, eliminado= None, fecha_eliminacion = None, nombre_eliminado = None,documento_eliminado = None ):
+        self.eliminado = eliminado 
+        self.fecha_eliminacion = fecha_eliminacion
+        nombre_eliminado = nombre_eliminado
+        documento_eliminado = documento_eliminado
+
+    class TaskSchema(ma.Schema):
+        class Meta:
+            flieds = ('eliminado', 'fecha_eliminacion',
+                      'nombre_eliminado', 'documento_eliminado')
 
 # Autenticación del usuario
 
@@ -994,11 +1036,100 @@ def eliminar_paciente(documento):
         flash('No se encontró al paciente', 'danger')
 
     return render_template('consult.html', user_authenticated=user_authenticated)
+
+@app.route('/Generar_cita', methods=['GET', 'POST'])
+@login_required
+@role_required('admin')
+def Generar_cita():
+    pacientes = None
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+
+        # Búsqueda del paciente por documento
+        if action == 'buscar':
+            documento = request.form.get('consult')
+            if documento:
+                pacientes = paciente.query.filter_by(documento=documento).all()
+                if not pacientes:
+                    flash('Paciente no encontrado', 'danger')
+            else:
+                flash('Debe ingresar un número de documento', 'danger')
+
+        # Agendar la cita para el paciente encontrado
+        elif action == 'agendar_cita':
+            documento = request.form.get('consult')
+            calendar = request.form.get('calendar')
+            time = request.form.get('reloj')
+            note = request.form.get('note')
+
+            if documento and calendar and time:
+                pacientes = paciente.query.filter_by(documento=documento).all()
+                if pacientes:
+                    p = pacientes[0]
+
+                    # Guardar los registros.
+                    gen_cita = generar_cita(
+                        calendar=calendar,
+                        time=time,
+                        note=note,
+                        paciente_documento=p.documento
+                    )
+                    db.session.add(gen_cita)
+                    db.session.commit()
+                    flash('Cita médica registrada con éxito.', 'success')
+
+                    # Enviar el correo (si se requiere)
+                    msg = Message(
+                        subject="Recordatorio de Cita Médica",
+                        sender=app.config['MAIL_USERNAME'],
+                        recipients=[p.correo_electronico]
+                    )
+                    msg.body = (f"Estimado/a {p.nombre_paciente},\n\n"
+                                f"Este es un recordatorio de su próxima cita el {calendar} a las {time}.\n\n"
+                                "Gracias por confiar en nosotros.\n\nAtentamente,\nAmplitud Visión")
+                    
+                    mail.send(msg)
+                    flash('Se ha enviado un correo con los detalles de la cita médica, verifique su correo.', 'success')
+                    print("Se ha enviado un correo con los detalles de la cita médica, verifique su correo.")
+                else:
+                    flash('Paciente no encontrado', 'danger')
+                    print("Paciente no encontrado")
+            else:
+                flash('Datos incompletos para agendar la cita', 'danger')
+                print("Datos incompletos para agendar la cita")
+
+    return render_template('Generar_cita.html', pacientes=pacientes)
+
+
+@app.route('/Consultar_cita', methods=['GET', 'POST'])
+@login_required
+@role_required('admin', 'consulta')
+def consultar_cita():
+
+    pacientes = None
+    gen_consulta = None
+    
+    if request.method == 'POST':
+        documento = request.form['consult']
+        if documento:
+            pacientes = paciente.query.filter_by(documento=documento).all()
+
+            if pacientes:
+                # Usa .all() para obtener todas las citas
+                gen_consulta = generar_cita.query.filter_by(paciente_documento=pacientes[0].documento).all()
+            else:
+                flash('Paciente no encontrado', 'danger')
+                print("Paciente no encontrado")
+        else:
+            flash('Por favor ingrese el documento del paciente', 'danger')
+            print("Por favor ingrese el documento del paciente")
+    
+    return render_template('Consultar_cita.html', pacientes=pacientes, citas=gen_consulta)
     
     
   #Inventory:
   
-
 class Inventory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     fecha = db.Column(db.DateTime)
@@ -1008,123 +1139,98 @@ class Inventory(db.Model):
     marca = db.Column(db.String(40))
     referencia = db.Column(db.String(20))
     color = db.Column(db.String(20))
+    precio_montura = db.Column(db.Float, nullable=False)
     cordones = db.Column(db.String(30))
     cantidad_cordones = db.Column(db.Integer)
+    precio_cordones = db.Column(db.Float, nullable=False)
     estuches = db.Column(db.String(30))
     cantidad_estuches = db.Column(db.Integer)
+    precio_estuches = db.Column(db.Float, nullable=False)
     stopper = db.Column(db.String(50))
     cantidad_stopper = db.Column(db.Integer)
+    precio_venta = db.Column(db.Float, nullable=False)
 
-    def __init__(self, fecha, sede, montura, cantidad_montura, marca, referencia, color, cordones, cantidad_cordones, estuches, cantidad_estuches, stopper, cantidad_stopper):
-        self.fecha = fecha
-        self.sede = sede
-        self.montura = montura
-        self.cantidad_montura = cantidad_montura
-        self.marca = marca
-        self.referencia = referencia
-        self.color = color
-        self.cordones = cordones
-        self.cantidad_cordones = cantidad_cordones
-        self.estuches = estuches
-        self.cantidad_estuches = cantidad_estuches
-        self.stopper = stopper
-        self.cantidad_stopper = cantidad_stopper
 
-    class TaskSchema(ma.Schema):
+def __init__(self, fecha,sede, montura, cantidad_montura, marca, referencia, color, precio_montura, cordones, cantidad_cordones, precio_cordones, estuches, cantidad_estuches, precio_estuches, stopper, cantidad_stopper, precio_venta):
+    self.fecha = fecha
+    self.sede = sede
+    self.montura = montura
+    self.cantidad_montura = cantidad_montura
+    self.marca = marca
+    self.referencia = referencia
+    self.color = color
+    self.precio_montura = precio_montura
+    self.cordones = cordones
+    self.cantidad_cordones = cantidad_cordones
+    self.precio_cordones = precio_cordones
+    self.estuches = estuches
+    self.cantidad_estuches = cantidad_estuches
+    self.precio_estuches = precio_estuches
+    self.stopper = stopper
+    self.cantidad_stopper = cantidad_stopper
+    self.precio_venta = precio_venta
+
+class TaskSchema(ma.Schema):
         class Meta:
-            fields = ('id', 'fecha', 'sede', 'montura', 'cantidad_montura', 'marca', 'referencia', 'color', 'cordones',
-                      'cantidad_cordones', 'estuches', 'cantidad_estuches',  'stopper', 'cantidad_stopper', 'numero_recibo')
+            fields = ('id','fecha','sede','montura','cantidad_montura','marca','referencia','color','precio_montura',
+           'cordones', 'cantidad_cordones','precio_cordones','estuches','cantidad_estuches','precio_estuches','stopper',
+           'cantidad_stopper', 'precio_venta')
+            
+task_schema = TaskSchema()
+task_schema = TaskSchema(many=True)
 
-
-class recibo(db.Model):
+class Venta(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    fecha_compra = db.Column(db.DateTime)
-    numero_recibo = db.Column(db.Integer)
-    documento = db.Column(db.Integer)
-    nombre_paciente = db.Column(db.String(200))
+    numero_recibo = db.Column(db.String(50), nullable=False, unique=True)
+    fecha_venta = db.Column(db.String(50))
+    estado = db.Column(db.String(20), default='completada')
+    cliente_id = db.Column(db.Integer, nullable=False)  
+    nombre = db.Column(db.String(50))
+    email = db.Column(db.String(120), nullable=False)
+    telefono = db.Column(db.String(20))
     direccion = db.Column(db.String(200))
-    telefono = db.Column(db.String(50))
-    correo = db.Column(db.String(200))
-    cantidad = db.Column(db.Integer)
-    cantidad_1 = db.Column(db.Integer)
-    cantidad_2 = db.Column(db.Integer)
-    cantidad_3 = db.Column(db.Integer)
-    cantidad_4 = db.Column(db.Integer)
-    cantidad_5 = db.Column(db.Integer)
-    cantidad_6 = db.Column(db.Integer)
-    cantidad_7 = db.Column(db.Integer)
-    detalle = db.Column(db.String(200))
-    detalle_1 = db.Column(db.String(200))
-    detalle_2 = db.Column(db.String(200))
-    detalle_3 = db.Column(db.String(200))
-    detalle_4 = db.Column(db.String(200))
-    detalle_5 = db.Column(db.String(200))
-    detalle_6 = db.Column(db.String(200))
-    detalle_7 = db.Column(db.String(200))
-    valor_unitario = db.Column(db.Float)
-    valor_unitario_1 = db.Column(db.Float)
-    valor_unitario_2 = db.Column(db.Float)
-    valor_unitario_3 = db.Column(db.Float)
-    valor_unitario_4 = db.Column(db.Float)
-    valor_unitario_5 = db.Column(db.Float)
-    valor_unitario_6 = db.Column(db.Float)
-    valor_unitario_7 = db.Column(db.Float)
-    valor_total = db.Column(db.Float)
-    valor_total_1 = db.Column(db.Float)
-    valor_total_2 = db.Column(db.Float)
-    valor_total_3 = db.Column(db.Float)
-    valor_total_4 = db.Column(db.Float)
-    valor_total_5 = db.Column(db.Float)
-    valor_total_6 = db.Column(db.Float)
-    valor_total_7 = db.Column(db.Float)  
-    total = db.Column(db.Float)
+    total = db.Column(db.Float, nullable=False)
+    detalles = db.relationship('VentaDetalle', backref='venta', lazy=True)
 
-    def __init__(self, fecha_compra, numero_recibo, documento, nombre_paciente, direccion, telefono, correo, cantidad, cantidad_1, cantidad_2, cantidad_3, cantidad_4, cantidad_5, cantidad_6, cantidad_7, detalle, detalle_1, detalle_2, detalle_3, detalle_4, detalle_5, detalle_6, detalle_7, valor_unitario, valor_unitario_1, valor_unitario_2, valor_unitario_3, valor_unitario_4, valor_unitario_5, valor_unitario_6, valor_unitario_7, valor_total, valor_total_1, valor_total_2, valor_total_3, valor_total_4, valor_total_5, valor_total_6, valor_total_7, total):
-        self.fecha_compra = fecha_compra
-        self.numero_recibo = numero_recibo
-        self.documento = documento
-        self.nombre_paciente = nombre_paciente
-        self.direccion = direccion
-        self.telefono = telefono
-        self.correo = correo
-        self.cantidad = cantidad
-        self.cantidad_1 = cantidad_1
-        self.cantidad_2 = cantidad_2
-        self.cantidad_3 = cantidad_3
-        self.cantidad_4 = cantidad_4
-        self.cantidad_5 = cantidad_5
-        self.cantidad_6 = cantidad_6
-        self.cantidad_7 = cantidad_7
-        self.detalle = detalle
-        self.detalle_1 = detalle_1
-        self.detalle_2 = detalle_2
-        self.detalle_3 = detalle_3
-        self.detalle_4 = detalle_4
-        self.detalle_5 = detalle_5
-        self.detalle_6 = detalle_6
-        self.detalle_7 = detalle_7
-        self.valor_unitario = valor_unitario
-        self.valor_unitario_1 = valor_unitario_1
-        self.valor_unitario_2 = valor_unitario_2
-        self.valor_unitario_3 = valor_unitario_3
-        self.valor_unitario_4 = valor_unitario_4
-        self.valor_unitario_5 = valor_unitario_5
-        self.valor_unitario_6 = valor_unitario_6
-        self.valor_unitario_7 = valor_unitario_7
-        self.valor_total = valor_total
-        self.valor_total_1 = valor_total_1
-        self.valor_total_2 = valor_total_2
-        self.valor_total_3 = valor_total_3
-        self.valor_total_4 = valor_total_4
-        self.valor_total_5 = valor_total_5
-        self.valor_total_6 = valor_total_6
-        self.valor_total_7 = valor_total_7
-        self.total = total
 
-    class TaskSchema(ma.Schema):
-        class Meta:
-            fields = ('id', 'fecha_compra', 'nombre_paciente', 'numero_recibo', 'documento', 'direccion', 'telefono', 'correo', 'cantidad', 'cantidad_1', 'cantidad_2', 'cantidad_3', 'cantidad_4', 'cantidad_5', 'cantidad_6', 'cantidad_7', 'detalle', 'detalle_1', 'detalle_2', 'detalle_3', 'detalle_4', 'detalle_5', 'detalle_6',
-                      'detalle_7', 'valor_unitario', 'valor_unitario_1', 'valor_unitario_2', 'valor_unitario_3', 'valor_unitario_4', 'valor_unitario_5', 'valor_unitario_6', 'valor_unitario_7', 'valor_total', 'valor_total_1', 'valor_total_2', 'valor_total_3', 'valor_total_4', 'valor_total_5', 'valor_total_6', 'valor_total_7', 'total')
+def __init__(self, numero_recibo, fecha_venta, estado, cliente_id, nombre, email, telefono, direccion):
+    self.numero_recibo = numero_recibo
+    self.fecha_venta = fecha_venta
+    self.estado = estado
+    self.cliente_id = cliente_id
+    self.nombre = nombre
+    self.email = email
+    self.telefono = telefono
+    self.direccion = direccion
+
+class TaskSchema(ma.Schema):
+        class Meta:('id','numero_recibo','fecha_venta','estado','cliente_id','nombre' ,'email','telefono','direccion')
+
+task_schema = TaskSchema()
+task_schema = TaskSchema(many=True)
+
+
+class VentaDetalle(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    venta_id = db.Column(db.Integer, db.ForeignKey('venta.id'), nullable=False)  # Relación con la tabla venta
+    producto_id = db.Column(db.Integer, db.ForeignKey('inventory.id'), nullable=False)  # Relación con inventario
+    cantidad = db.Column(db.Integer, nullable=False)
+    precio_unitario = db.Column(db.Float, nullable=False)
+    subtotal = db.Column(db.Float, nullable=False)
+    producto = db.relationship('Inventory', backref='ventas_detalle', lazy=True)
+
+def __init__(self, venta_id, producto_id, cantidad, precio_unitario):
+    self.venta_id = venta_id
+    self.producto_id = producto_id
+    self.cantidad = cantidad
+    self.precio_unitario = precio_unitario
+    self.subtotal = cantidad * precio_unitario
+
+class TaskSchema(ma.Schema):
+        class Meta:('id','venta_id','producto_id','cantidad','precio_unitario','subtotal')
+
+task_schema = TaskSchema()
+task_schema = TaskSchema(many=True)
 
 
 # Agregar los datos dentro del inventario
@@ -1140,13 +1246,17 @@ def inventario():
         cantidad_montura = request.form['cantidad_montura']
         marca = request.form['marca']
         referencia = request.form['referencia']
+        precio_montura = float(request.form['precio_montura']) 
         color = request.form['color']
         cordones = request.form['cordones']
         cantidad_cordones = request.form['cantidad_cordones']
+        precio_cordones = float(request.form['precio_cordones']) 
         estuches = request.form['estuches']
         cantidad_estuches = request.form['cantidad_estuches']
+        precio_estuches = float(request.form['precio_estuches']) 
         stopper = request.form['stopper']
         cantidad_stopper = request.form['cantidad_stopper']
+        precio_venta = float(request.form['precio_venta'])
 
         inventario = Inventory(
             fecha=fecha,
@@ -1155,13 +1265,17 @@ def inventario():
             cantidad_montura=cantidad_montura,
             marca=marca,
             referencia=referencia,
+            precio_montura = precio_montura,
             color=color,
             cordones=cordones,
             cantidad_cordones=cantidad_cordones,
+            precio_cordones = precio_cordones,
             estuches=estuches,
             cantidad_estuches=cantidad_estuches,
+            precio_estuches = precio_estuches,
             stopper=stopper,
             cantidad_stopper=cantidad_stopper,
+            precio_venta = precio_venta
         )
         db.session.add(inventario)
         db.session.commit()
@@ -1170,9 +1284,11 @@ def inventario():
         return render_template('inventory.html')
     else:
         print('Inventario no Disponible')
+        flash('Inventario no Disponible', 'danger')
         return render_template('inventory.html')
+    
 
-
+#Generar archivo de export del inventario
 @app.route('/export')
 @login_required
 @role_required('admin')
@@ -1180,10 +1296,10 @@ def inventario():
 def export():
     try:
         data = Inventory.query.all()
-        df = pd.DataFrame([[item.id, item.fecha, item.sede, item.montura, item.cantidad_montura, item.marca, item.referencia, item.color, item.cordones,
-                            item.cantidad_cordones, item.estuches, item.cantidad_estuches, item.stopper, item.cantidad_stopper
+        df = pd.DataFrame([[item.id, item.fecha, item.sede, item.montura, item.cantidad_montura, item.marca, item.referencia, item.precio_montura, item.color, item.cordones,
+                            item.cantidad_cordones,item.precio_cordones, item.estuches, item.cantidad_estuches, item.precio_estuches, item.stopper, item.cantidad_stopper, item.precio_venta
                             ] for item in data],
-                          columns=['ID', 'Fecha', 'Sede', 'Montura', 'Cantidad Montura', 'Marca', 'Referencia', 'Color', 'Cordones', 'Cantidad Cordones', 'Estuches', 'Cantidad Estuches', 'Stopper', 'Cantidad Stopper'])
+                          columns=['ID', 'Fecha', 'Sede', 'Montura', 'Cantidad Montura', 'Marca', 'Referencia', 'Precio de Montura' , 'Color', 'Cordones', 'Cantidad Cordones', 'Precio de Cordones' ,'Estuches', 'Cantidad Estuches', 'Precio de Estuches' , 'Stopper', 'Cantidad Stopper','precio_venta'])
         
         # Crear directorio para informes si no existe
         reports_dir = os.path.join(app.root_path, 'static', 'reports')
@@ -1211,6 +1327,7 @@ def export():
         flash('Error al generar el informe', 'error')
         return render_template('inventory.html')
 
+#Generar la descarga del archivo.
 @app.route('/download/<filename>')
 @login_required
 @role_required('admin')
@@ -1219,8 +1336,8 @@ def download_file(filename):
     return send_from_directory(reports_dir, filename, as_attachment=True)
 
 
-#Busqueda de Inventario
 
+#Busqueda de Inventario
 @app.route('/consultinventory')
 @csrf.exempt
 @login_required
@@ -1229,11 +1346,176 @@ def consultinventory():
     inventory = Inventory.query.all()  # Obtener todos los registros de la tabla Inventory
     return render_template('consultinventory.html', inventory=inventory)
 
-#Editar dentro de un inventario
 
+# Realizar una venta
+@app.route('/venta', methods=['GET', 'POST'])
+@login_required
+@role_required('admin')
+def realizar_venta():
+    nueva_venta = None  # Inicializamos 'nueva_venta' antes del bloque try
+    
+    if request.method == 'GET':
+        productos = Inventory.query.all()
+        return render_template('venta.html', productos=productos)
+    
+    elif request.method == 'POST':
+        try:
+            # Datos de la venta
+            fecha_venta = request.form['fecha_venta']
+            numero_recibo = request.form['numero-recibo']
+            productos = request.form.getlist('productos[]')
+            cantidades = request.form.getlist('cantidades[]')
+            precios = request.form.getlist('precios[]')
 
-# Busqueda por # recibo
+            # Datos del cliente
+            cliente_id = request.form['cliente_id']
+            nombre = request.form['nombre']
+            email = request.form['email']
+            telefono = request.form['telefono']
+            direccion = request.form['direccion']
 
+            # Validación de datos
+            if not productos or not cantidades or not precios:
+                flash('Debe seleccionar al menos un producto y cantidad', 'danger')
+                print("Debe seleccionar al menos un producto y cantidad")
+                return redirect(url_for('realizar_venta'))
+
+            # Iniciar transacción
+            db.session.begin_nested()
+
+            # Crear objeto de venta
+            nueva_venta = Venta(
+                numero_recibo=numero_recibo,
+                fecha_venta=fecha_venta,
+                cliente_id=cliente_id,
+                nombre=nombre,
+                email=email,
+                telefono=telefono,
+                direccion=direccion,
+                total=0  # Inicializamos el total
+            )
+
+            db.session.add(nueva_venta)
+            db.session.flush()  # Asigna un ID a la venta sin confirmar la transacción
+
+            # Crear los detalles de la venta
+            for i in range(len(productos)):
+                # Obtener el valor del producto (e.g., "montura-1")
+                producto_value = productos[i]
+                cantidad = int(cantidades[i])
+                precio_unitario = float(precios[i])
+
+                # Separar el tipo de producto y el ID
+                tipo_producto, producto_id = producto_value.split('-')
+
+                # Buscar el producto en el inventario
+                producto = Inventory.query.get(producto_id)
+
+                if not producto:
+                    db.session.rollback()
+                    flash(f"El producto con ID {producto_id} no existe.", 'danger')
+                    print(f"El producto con ID {producto_id} no existe.")
+                    return redirect(url_for('realizar_venta'))
+
+                # Validar la cantidad disponible en el inventario
+                if tipo_producto == "montura" and producto.cantidad_montura < cantidad:
+                    flash(f"No hay suficiente stock de monturas para el producto {producto.montura}.", 'danger')
+                    print(f"No hay suficiente stock de monturas para el producto {producto.montura}.")
+                    db.session.rollback()
+                    return redirect(url_for('realizar_venta'))  # Este return debe estar correctamente indentado
+
+                # Calcular el subtotal
+                subtotal = cantidad * precio_unitario
+
+                # Crear el detalle de la venta
+                detalle = VentaDetalle(
+                    venta_id=nueva_venta.id,
+                    producto_id=producto_id,
+                    cantidad=cantidad,
+                    precio_unitario=precio_unitario,
+                    subtotal=subtotal
+                )
+
+                db.session.add(detalle)
+
+                # Actualizar el inventario
+                if tipo_producto == "montura":
+                    producto.cantidad_montura -= cantidad
+                elif tipo_producto == "cordones":
+                    producto.cantidad_cordones -= cantidad
+                elif tipo_producto == "estuches":
+                    producto.cantidad_estuches -= cantidad
+                elif tipo_producto == "stopper":
+                    producto.cantidad_stopper -= cantidad
+
+                # Actualizar el total de la venta
+                nueva_venta.total += subtotal
+
+            # Confirmar la transacción
+            db.session.commit()
+
+            # Generar el XML y PDF
+            xml_compra = generar_xml_compra(nueva_venta)
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".xml") as temp_xml:
+                temp_xml.write(xml_compra.encode('utf-8'))
+                temp_xml_path = temp_xml.name
+
+            pdf_path = generar_pdf_compra(nueva_venta)
+
+            # Enviar el correo con los archivos adjuntos
+            try:
+                msg = Message('Recibo de Compra',
+                              sender=app.config['MAIL_USERNAME'],  # Cambia MAIL_PASSWORD a MAIL_USERNAME
+                              recipients=[nueva_venta.email])
+
+                # Renderizar plantilla HTML del correo
+                msg.html = render_template('email_compra.html', venta=nueva_venta)
+
+                # Adjuntar el archivo XML
+                with open(temp_xml_path, 'rb') as f:
+                    msg.attach(f'{nueva_venta.numero_recibo}.xml', 'application/xml', f.read())
+
+                # Adjuntar el archivo PDF
+                with open(pdf_path, 'rb') as f:
+                    msg.attach(f'{nueva_venta.numero_recibo}.pdf', 'application/pdf', f.read())
+
+                # Enviar el correo
+                mail.send(msg)
+                flash('Correo enviado con éxito', 'success')
+                print('Correo enviado con éxito')
+
+            except Exception as e:
+                flash(f'Error al enviar el correo: {str(e)}', 'danger')
+                print(f'Error al enviar el correo: {str(e)}')
+
+            # Limpiar archivos temporales
+            os.unlink(temp_xml_path)
+            os.unlink(pdf_path)
+
+            flash('Venta realizada con éxito', 'success')
+            print('Venta realizada con éxito')
+            return redirect(url_for('realizar_venta'))  # Asumiendo que tienes una vista para listar ventas
+
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error al procesar la venta: {str(e)}', 'danger')
+            print(f'Error al procesar la venta: {str(e)}')
+            return redirect(url_for('realizar_venta'))
+        
+# Función para actualizar el inventario
+def actualizar_inventario(producto_id, cantidad_vendida):
+    inventario = Inventory.query.get(producto_id)
+    if inventario:
+        if inventario.cantidad_montura < cantidad_vendida:
+            flash(f"No hay suficiente stock para el producto {inventario.montura}", 'danger')
+            print(f"No hay suficiente stock para el producto {inventario.montura}")
+            return False
+        inventario.cantidad_montura -= cantidad_vendida
+        db.session.commit()
+        flash(f"Inventario de {inventario.montura} actualizado correctamente", 'success')
+        print(f"Inventario de {inventario.montura} actualizado correctamente")
+
+# Búsqueda de recibo
 @app.route('/search', methods=['GET', 'POST'])
 @csrf.exempt
 @login_required
@@ -1241,93 +1523,44 @@ def consultinventory():
 def search():
     if request.method == 'POST':
         numero_recibo = request.form['recibo']
-        # Realiza la búsqueda en la base de datos usando el número de recibo
-        inventory_data = recibo.query.filter_by(
-            numero_recibo=numero_recibo).all()
-        print("tu información", inventory_data)
-        # Pasa 'recibo' como parte del contexto
-        return render_template('search.html', inventory_data=inventory_data, recibo=numero_recibo)
-    else:
-        flash('Información no disponible', 'danger')
-        print('Información no disponible')
+        venta_data = Venta.query.options(joinedload(Venta.detalles).joinedload(VentaDetalle.producto)).filter_by(numero_recibo=numero_recibo).first()
+
+        if venta_data:
+            return render_template('search.html', venta=venta_data)
+        else:
+            flash('Información no disponible', 'danger')
+            print("Información no disponible")
     return render_template('search.html')
 
-#Generar  archivo XML
 def generar_xml_compra(compra):
     root = ET.Element("Recibo")  # Crear el elemento raíz del documento XML
-
-    # Agregar los subelementos de la raíz
+    
+    # Información de la venta
     ET.SubElement(root, "NumeroRecibo").text = str(compra.numero_recibo)
-    ET.SubElement(root, "FechaCompra").text = str(compra.fecha_compra)
-    ET.SubElement(root, "NombrePaciente").text = compra.nombre_paciente
-    ET.SubElement(root, "Documento").text = str(compra.documento)
-    ET.SubElement(root, "Direccion").text = str(compra.direccion)
-    ET.SubElement(root, "Telefono").text = str(compra.telefono)
-    ET.SubElement(root, "Correo").text = str(compra.correo)
+    ET.SubElement(root, "FechaCompra").text = str(compra.fecha_venta)
+    
+    # Información del cliente (Ajustar para usar los atributos correctos)
+    ET.SubElement(root, "NombreCliente").text = compra.nombre
+    ET.SubElement(root, "Direccion").text = compra.direccion
+    ET.SubElement(root, "Telefono").text = compra.telefono
+    ET.SubElement(root, "Email").text = compra.email
 
-    ET.SubElement(root, "Cantidad").text = str(compra.cantidad)
-    ET.SubElement(root, "Cantidad_1").text = str(compra.cantidad_1)
-    ET.SubElement(root, "Cantidad_2").text = str(compra.cantidad_2)
-    ET.SubElement(root, "Cantidad_3").text = str(compra.cantidad_3)
-    ET.SubElement(root, "Cantidad_4").text = str(compra.cantidad_4)
-    ET.SubElement(root, "Cantidad_5").text = str(compra.cantidad_5)
-    ET.SubElement(root, "Cantidad_6").text = str(compra.cantidad_6)
-    ET.SubElement(root, "Cantidad_7").text = str(compra.cantidad_7)
-
-    ET.SubElement(root, "Detalle").text = compra.detalle
-    ET.SubElement(root, "Detalle_1").text = compra.detalle_1
-    ET.SubElement(root, "Detalle_2").text = compra.detalle_2
-    ET.SubElement(root, "Detalle_3").text = compra.detalle_3
-    ET.SubElement(root, "Detalle_4").text = compra.detalle_4
-    ET.SubElement(root, "Detalle_5").text = compra.detalle_5
-    ET.SubElement(root, "Detalle_6").text = compra.detalle_6
-    ET.SubElement(root, "Detalle_7").text = compra.detalle_7
-
-    ET.SubElement(root, "ValorUnitario").text = str(compra.valor_unitario)
-    ET.SubElement(root, "ValorUnitario_1").text = str(compra.valor_unitario_1)
-    ET.SubElement(root, "ValorUnitario_2").text = str(compra.valor_unitario_2)
-    ET.SubElement(root, "ValorUnitario_3").text = str(compra.valor_unitario_3)
-    ET.SubElement(root, "ValorUnitario_4").text = str(compra.valor_unitario_4)
-    ET.SubElement(root, "ValorUnitario_5").text = str(compra.valor_unitario_5)
-    ET.SubElement(root, "ValorUnitario_6").text = str(compra.valor_unitario_6)
-    ET.SubElement(root, "ValorUnitario_7").text = str(compra.valor_unitario_7)
-
-    ET.SubElement(root, "ValorTotal").text = str(compra.valor_total)
-    ET.SubElement(root, "ValorTotal_1").text = str(compra.valor_total_1)
-    ET.SubElement(root, "ValorTotal_2").text = str(compra.valor_total_2)
-    ET.SubElement(root, "ValorTotal_3").text = str(compra.valor_total_3)
-    ET.SubElement(root, "ValorTotal_4").text = str(compra.valor_total_4)
-    ET.SubElement(root, "ValorTotal_5").text = str(compra.valor_total_5)
-    ET.SubElement(root, "ValorTotal_6").text = str(compra.valor_total_6)
-    ET.SubElement(root, "ValorTotal_7").text = str(compra.valor_total_7)
-
-    ET.SubElement(root, "Total").text = str(compra.total)
-
+    # Información de los productos vendidos
     items = ET.SubElement(root, "Items")
-    for i in range(8):
-        cantidad = str(getattr(compra, f'cantidad_{i}', ''))
-        detalle = str(getattr(compra, f'detalle_{i}', ''))
-        valor_unitario = str(getattr(compra, f'valor_unitario_{i}', ''))
-        valor_total = str(getattr(compra, f'valor_total_{i}', ''))
+    for detalle in compra.detalles:  # Acceder a los detalles correctamente
+        item = ET.SubElement(items, "Item")
+        ET.SubElement(item, "ProductoID").text = str(detalle.producto_id)
+        ET.SubElement(item, "Cantidad").text = str(detalle.cantidad)
+        ET.SubElement(item, "PrecioUnitario").text = str(detalle.precio_unitario)
+        ET.SubElement(item, "Subtotal").text = str(detalle.cantidad * detalle.precio_unitario)
 
-        if cantidad and detalle and valor_unitario and valor_total:
-            item = ET.SubElement(items, "Item")
-            ET.SubElement(item, "Cantidad").text = cantidad
-            ET.SubElement(item, "Detalle").text = detalle
-            ET.SubElement(item, "ValorUnitario").text = valor_unitario
-            ET.SubElement(item, "ValorTotal").text = valor_total
-
+    # Total de la venta
     ET.SubElement(root, "Total").text = str(compra.total)
 
-    tree = ET.ElementTree(root)
-
-    return ET.tostring(root, encoding='unicode')
-
-
-
+    # Convertir a XML
+    return ET.tostring(root, encoding='utf-8').decode('utf-8')
 
 def generar_pdf_compra(compra):
-    # Crear un archivo PDF temporal
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
         pdf_path = temp_pdf.name
 
@@ -1338,15 +1571,14 @@ def generar_pdf_compra(compra):
 
     # Título
     elements.append(Paragraph(f"Recibo de Compra: {compra.numero_recibo}", styles['Title']))
-    elements.append(Paragraph(f"Fecha: {compra.fecha_compra}", styles['Normal']))
+    elements.append(Paragraph(f"Fecha: {compra.fecha_venta}", styles['Normal']))
 
     # Información del cliente
     cliente_data = [
-        ["Cliente", compra.nombre_paciente],
-        ["Documento", compra.documento],
+        ["Cliente", compra.nombre],
         ["Dirección", compra.direccion],
         ["Teléfono", compra.telefono],
-        ["Correo", compra.correo]
+        ["Correo", compra.email]
     ]
     cliente_table = Table(cliente_data, colWidths=[100, 300])
     cliente_table.setStyle(TableStyle([
@@ -1356,192 +1588,31 @@ def generar_pdf_compra(compra):
         ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
         ('FONTSIZE', (0, 0), (-1, -1), 10),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 12),
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 12),
-        ('TOPPADDING', (0, 0), (-1, 0), 12),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
     ]))
     elements.append(cliente_table)
-    elements.append(Paragraph("<br/><br/>", styles['Normal']))
 
     # Detalles de la compra
-    detalles_data = [
-        ["Detalle", "Cantidad", "Valor Unitario", "Valor Total"]
-    ]
-    for i in range(8):  # Asumiendo que tienes hasta 8 detalles (0-7)
-        detalle = getattr(compra, f'detalle_{i}' if i > 0 else 'detalle', '')
-        cantidad = getattr(compra, f'cantidad_{i}' if i > 0 else 'cantidad', '')
-        valor_unitario = getattr(compra, f'valor_unitario_{i}' if i > 0 else 'valor_unitario', '')
-        valor_total = getattr(compra, f'valor_total_{i}' if i > 0 else 'valor_total', '')
-        
-        if detalle:  # Solo añadir filas con detalles
-            detalles_data.append([detalle, cantidad, valor_unitario, valor_total])
+    detalles_data = [["Producto", "Cantidad", "Valor Unitario", "Valor Total"]]
+    for detalle in compra.detalles:  # Ajustar para usar 'detalles'
+        detalles_data.append([detalle.producto_id, detalle.cantidad, detalle.precio_unitario, detalle.cantidad * detalle.precio_unitario])
 
     detalles_table = Table(detalles_data, colWidths=[200, 100, 100, 100])
     detalles_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 12),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
-        ('ALIGN', (0, 1), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 1), (-1, -1), 10),
-        ('BOTTOMPADDING', (0, 1), (-1, -1), 6),
         ('GRID', (0, 0), (-1, -1), 1, colors.black)
     ]))
     elements.append(detalles_table)
 
-    # Total
-    elements.append(Paragraph("<br/><br/>", styles['Normal']))
-    elements.append(Paragraph(f"Total: {compra.total}", styles['Heading2']))
+    # Total de la venta
+    total_data = [["Total", compra.total]]
+    total_table = Table(total_data, colWidths=[300, 100])
+    elements.append(total_table)
 
-    # Generar el PDF
+    # Generar PDF
     doc.build(elements)
-
     return pdf_path
-
-@app.route('/recibo', methods=['GET', 'POST'])
-@csrf.exempt
-@login_required
-@role_required('admin', 'consulta')
-def compra():
-    if request.method == 'POST':
-        fecha_compra = request.form['day']
-        numero_recibo = request.form['numero-recibo']
-        nombre_paciente = request.form['nombre_paciente']
-        documento = request.form['cc']  
-        direccion = request.form['direccion']
-        telefono = request.form['telefono']
-        correo = request.form['correo']
-        cantidad = request.form['cantidad']
-        cantidad_1 = request.form['cantidad_1']
-        cantidad_2 = request.form['cantidad_2']
-        cantidad_3 = request.form['cantidad_3']
-        cantidad_4 = request.form['cantidad_4']
-        cantidad_5 = request.form['cantidad_5']
-        cantidad_6 = request.form['cantidad_6']
-        cantidad_7 = request.form['cantidad_7']
-        detalle = request.form['detalle']
-        detalle_1 = request.form['detalle_1']
-        detalle_2 = request.form['detalle_2']
-        detalle_3 = request.form['detalle_3']
-        detalle_4 = request.form['detalle_4']
-        detalle_5 = request.form['detalle_5']
-        detalle_6 = request.form['detalle_6']
-        detalle_7 = request.form['detalle_7']
-        valor_unitario = request.form['v_unidad']
-        valor_unitario_1 = request.form['v_unidad_1']
-        valor_unitario_2 = request.form['v_unidad_2']
-        valor_unitario_3 = request.form['v_unidad_3']
-        valor_unitario_4 = request.form['v_unidad_4']
-        valor_unitario_5 = request.form['v_unidad_5']
-        valor_unitario_6 = request.form['v_unidad_6']
-        valor_unitario_7 = request.form['v_unidad_7']
-        valor_total = request.form['v_total']
-        valor_total_1 = request.form['v_total_1']
-        valor_total_2 = request.form['v_total_2']
-        valor_total_3 = request.form['v_total_3']
-        valor_total_4 = request.form['v_total_4']
-        valor_total_5 = request.form['v_total_5']
-        valor_total_6 = request.form['v_total_6']
-        valor_total_7 = request.form['v_total_7']
-        total = request.form['total']
-
-        compra = recibo(
-            fecha_compra=fecha_compra,
-            numero_recibo=numero_recibo,
-            documento=documento,
-            nombre_paciente=nombre_paciente,
-            direccion=direccion,
-            telefono=telefono,
-            correo=correo,
-            cantidad=cantidad,
-            cantidad_1=cantidad_1,
-            cantidad_2=cantidad_2,
-            cantidad_3=cantidad_3,
-            cantidad_4=cantidad_4,
-            cantidad_5=cantidad_5,
-            cantidad_6=cantidad_6,
-            cantidad_7=cantidad_7,
-            detalle=detalle,
-            detalle_1=detalle_1,
-            detalle_2=detalle_2,
-            detalle_3=detalle_3,
-            detalle_4=detalle_4,
-            detalle_5=detalle_5,
-            detalle_6=detalle_6,
-            detalle_7=detalle_7,
-            valor_unitario=valor_unitario,
-            valor_unitario_1=valor_unitario_1,
-            valor_unitario_2=valor_unitario_2,
-            valor_unitario_3=valor_unitario_3,
-            valor_unitario_4=valor_unitario_4,
-            valor_unitario_5=valor_unitario_5,
-            valor_unitario_6=valor_unitario_6,
-            valor_unitario_7=valor_unitario_7,
-            valor_total=valor_total,
-            valor_total_1=valor_total_1,
-            valor_total_2=valor_total_2,
-            valor_total_3=valor_total_3,
-            valor_total_4=valor_total_4,
-            valor_total_5=valor_total_5,
-            valor_total_6=valor_total_6,
-            valor_total_7=valor_total_7,
-            total=total
-        )
-        db.session.add(compra)
-        db.session.commit()
-        # Generar el XML
-        xml_compra = generar_xml_compra(compra)
-        print(xml_compra)  # Imprimir o guardar el XML según sea necesario
-
-
-        # Guardar el XML en un archivo temporal
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".xml") as temp_xml:
-            temp_xml.write(xml_compra.encode('utf-8'))
-            temp_xml_path = temp_xml.name
-
-        # Generar el PDF
-        pdf_path = generar_pdf_compra(compra)
-        #Enviar el archivo adjunto
-
-        msg = Message('Recibo de Compra',
-                      sender=app.config['MAIL_PASSWORD'],
-                      recipients=[compra.correo])
-        msg.html = render_template('email_compra.html', compra=compra)
-
-         # Adjuntar el archivo XML
-        with open(temp_xml_path, 'rb') as f:
-            msg.attach(f'{numero_recibo}.xml', 'application/xml', f.read())
-
-   # Adjuntar el archivo PDF
-        with open(pdf_path, 'rb') as f:
-            msg.attach(f'{compra.numero_recibo}.pdf', 'application/pdf', f.read())
-
-
-        mail.send(msg)
-
-        # Limpieza de archivos temporales
-        os.unlink(temp_xml_path)
-        os.unlink(pdf_path)
-        
-        flash('El correo se envió con éxito', 'success')
-        print('El correo se envió con éxito')
-        return render_template('recibo.html')
-    else:
-        # Si la solicitud no es un POST, simplemente renderiza el template sin la variable compra
-        print('Recibo no enviado')
-        flash('Recibo no enviado', 'danger')
-        return render_template('recibo.html')
-
-
 
 
 

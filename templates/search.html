@@ -1,83 +1,97 @@
-<!DOCTYPE html>
 {% extends "layouth.html" %}
-{%block content%}
+{% block content %}
 
-<html>
+<div class="container">
+    <h1 class="mt-5">Búsqueda de Recibo</h1>
 
-<head>
-    <title>Busqueda</title>
-</head>
-
-<body>
-
-
-    <div class="container">
-        <h1 class="mt-5">Búsqueda de Recibo</h1>
-    
-        <form id="search-form" method="post" action="/search" class="mt-3">
-            <div class="row mb-3">
-                <div class="col">
-                    <label for="recibo" class="form-label">Indique el Número de Recibo:</label>
-                    <input type="text" name="recibo" id="recibo" class="form-control">
-                </div>
-                <div class="col-auto align-self-end">
-                    <button type="submit" class="btn btn-success">Buscar</button>
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                </div>
+    <form id="search-form" method="post" action="/search" class="mt-3">
+        <div class="row mb-3">
+            <div class="col">
+                <label for="recibo" class="form-label">Indique el Número de Recibo:</label>
+                <input type="text" name="recibo" id="recibo" class="form-control">
             </div>
-        </form>
-    
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped">
-                <thead class="table-dark">
-                    <tr>
-                        <th>FECHA</th>
-                        <th>FACTURA DE VENTA</th>
-                        <th>NOMBRE</th>
-                        <th>CC</th>
-                        <th>DIRECCIÓN</th>
-                        <th>TELÉFONO</th>
-                        <th>CORREO</th>
-                        <th>CANTIDAD</th>
-                        <th>DETALLE</th>
-                        <th>VALOR UNIDAD</th>
-                        <th>VALOR TOTAL</th>
-                        <th>TOTAL</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if inventory_data %}
-                        {% for recibo in inventory_data %}
-                            <tr>
-                                <td>{{ recibo.fecha_compra }}</td>
-                                <td>{{ recibo.numero_recibo }}</td>
-                                <td>{{ recibo.nombre_paciente }}</td>
-                                <td>{{ recibo.documento }}</td>
-                                <td>{{ recibo.direccion }}</td>
-                                <td>{{ recibo.telefono }}</td>
-                                <td>{{ recibo.correo }}</td>
-                                <td>{{ recibo.cantidad }}</td>
-                                <td>{{ recibo.detalle }}</td>
-                                <td>{{ recibo.valor_unitario }}</td>
-                                <td>{{ recibo.valor_total }}</td>
-                                <td>{{ recibo.total }}</td>
-                            </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="12">No se encontraron resultados para el recibo especificado.</td>                       
-                        </tr>
-                    {% endif %}
-                    <a href="/menu" class="btn btn-secondary">Atrás</a>
-                </tbody>
-            </table>
+            <div class="col-auto align-self-end">
+                <button type="submit" class="btn btn-success"><i class="fa fa-search" aria-hidden="true"></i> Buscar</button>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            </div>
         </div>
-    </div>
-        </table>
     </form>
 
-</body>
+    {% if venta %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>FECHA</th>
+                    <th>FACTURA DE VENTA</th>
+                    <th>NOMBRE</th>
+                    <th>CC</th>
+                    <th>DIRECCIÓN</th>
+                    <th>TELÉFONO</th>
+                    <th>CORREO</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ venta.fecha_venta }}</td>
+                    <td>{{ venta.numero_recibo }}</td>
+                    <td>{{ venta.nombre }}</td>
+                    <td>{{ venta.cliente_id }}</td>
+                    <td>{{ venta.direccion }}</td>
+                    <td>{{ venta.telefono }}</td>
+                    <td>{{ venta.email}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-</html>
+    <div class="table-responsive mt-4">
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>CANTIDAD</th>
+                    <th>DETALLE</th>
+                    <th>VALOR UNIDAD</th>
+                    <th>VALOR TOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detalle in venta.detalles %}
+                <tr>
+                    <td>{{ detalle.cantidad }}</td>
+                    <td>
+                        {% if detalle.producto %}
+                            {% if detalle.producto.montura %}
+                                {{ detalle.producto.montura }} (Montura)
+                            {% elif detalle.producto.cordones %}
+                                {{ detalle.producto.cordones }} (Cordones)
+                            {% elif detalle.producto.estuches %}
+                                {{ detalle.producto.estuches }} (Estuches)
+                            {% elif detalle.producto.stopper %}
+                                {{ detalle.producto.stopper }} (Stopper)
+                            {% else %}
+                                Producto no especificado
+                            {% endif %}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>${{ detalle.precio_unitario }}</td>
+                    <td>${{ detalle.subtotal }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="table-info">
+                    <td colspan="3" class="text-end"><strong>TOTAL:</strong></td>
+                    <td><strong>${{ venta.total }}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="mt-3">No se ha encontrado ningún recibo con ese número.</p>
+    {% endif %}
 
-{%endblock%}
+    <a href="/menu" class="btn btn-secondary mt-3"><i class="fa fa-arrow-left" aria-hidden="true"></i> Atrás</a>
+</div>
+
+{% endblock %}

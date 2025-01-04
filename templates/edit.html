@@ -7,6 +7,7 @@
 <head>
     <title>EDIT</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="logo/logo.ico">
 </head>
 
 <body>
@@ -516,9 +517,9 @@
             </table>
 
     </from>
-        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>  Guardar Cambios</button>
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <a href="/consult" class="btn btn-secondary">Atrás</a>
+        <a href="/consult" class="btn btn-secondary"><i class="fa fa-arrow-left" aria-hidden="true"></i> Atrás</a>
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
